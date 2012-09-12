@@ -5,10 +5,12 @@ class Zipmark_Client {
 
   public static $appSecret;
 
-  public static $apiUrl = 'http://api.zipmark.com';
+  private static $sandboxApiUrl = 'https://sandbox.zipmark.com';
+  private static $productionApiUrl = 'https://api.zipmark.com';
 
   private $_appId;
   private $_appSecret;
+  private $_production = false;
   private $_apiUrl;
 
   // Zipmark API Version
@@ -35,9 +37,10 @@ class Zipmark_Client {
    * @param string $appSecret Application Secret
    * @param string $apiUrl    URL of Zipmark API - Defaults to production
    */
-  function __construct($appId = null, $appSecret = null, $apiUrl = null) {
+  function __construct($appId = null, $appSecret = null, $production = false, $apiUrl = null) {
     $this->_appId = $appId;
     $this->_appSecret = $appSecret;
+    $this->_production = $production;
     $this->_apiUrl = $apiUrl;
   }
 
@@ -80,7 +83,19 @@ class Zipmark_Client {
    * @return string API URL
    */
   public function apiUrl() {
-    return (empty($this->_apiUrl) ? Zipmark_Client::$apiUrl : $this->_apiUrl);
+    if (empty($this->_apiUrl))
+      return ($this->_production) ? Zipmark_Client::$productionApiUrl : Zipmark_Client::$sandboxApiUrl;
+    else
+      return $this->_apiUrl;
+  }
+
+  /**
+   * Enable/disable production mode
+   *
+   * @param boolean $enabled True/false to enable/disable production mode
+   */
+  public function setProduction($enabled) {
+    $this->_production = $enabled;
   }
 
   /**
