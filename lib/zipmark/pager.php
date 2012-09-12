@@ -4,9 +4,8 @@
  * Iterate through paginated resources.  Used for lists that may require
  * multiple API calls to retrieve all results such as index calls.
  *
- * The list of resources is treated as a loop.  Iterating past the last item
- * returns to the beginning of the list and vice versa, meaning that the list
- * can be traversed in both directions.
+ * Iterating past the last item in either direction returns a 
+ * null and leaves the pointer unchanged.
  */
 abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
   private $_position = 0; // Position within the current page
@@ -72,7 +71,7 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
   }
 
   /**
-   * Increments the position to the next element (wrapping)
+   * Increments the position to the next element
    */
   public function next() {
     if (empty($this->_count)) {
@@ -98,7 +97,7 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
   }
 
   /**
-   * Decrements the position to the previous element (wrapping)
+   * Decrements the position to the previous element
    */
   public function prev() {
     if (empty($this->_count)) {
