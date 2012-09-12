@@ -71,6 +71,33 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
   }
 
   /**
+   * Get the current page
+   *
+   * @return integer Current page
+   */
+  public function page() {
+    return $this->_page;
+  }
+
+  /**
+   * Get the number of pages
+   *
+   * @return integer Number of pages
+   */
+  public function numPages() {
+    return $this->_totalPages;
+  }
+
+  /**
+   * Get the number of objects per page
+   *
+   * @return integer Number of objects per page
+   */
+  public function perPage() {
+    return $this->_perPage;
+  }
+
+  /**
    * Increments the position to the next element
    */
   public function next() {
