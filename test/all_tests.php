@@ -11,9 +11,6 @@ require_once('test_helpers.php');
 error_reporting(E_ALL);
 ini_set('display_errors','On');
 
-// Set default timezone
-// date_default_timezone_set('UTC');
-
 Mock::generate('Zipmark_Client');
 
 class AllTests extends TestSuite {
