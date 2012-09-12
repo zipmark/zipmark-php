@@ -24,7 +24,7 @@ class ZipmarkBillTest extends UnitTestCase {
     $bill = Zipmark_Bill::get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1b', $client);
 
     $this->assertIsA($bill, 'Zipmark_Bill');
-    $this->assertEqual($bill->getHref(), 'http://zipmark-service.dev/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
+    $this->assertEqual($bill->getHref(), 'http://example.org/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
     $this->assertEqual($bill->id, '3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
     $this->assertEqual($bill->amount_cents, 1000);
     $this->assertEqual($bill->memo, 'test bill');
