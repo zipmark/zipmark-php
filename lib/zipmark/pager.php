@@ -75,36 +75,52 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
    * Increments the position to the next element (wrapping)
    */
   public function next() {
+    if (empty($this->_count)) {
+      return null;
+    }
+
     $this->_position++;
     if ($this->_position >= $this->_count) {
-      // Passed the end, looping to beginning
-      $this->_position = 0;
-      if (isset($this->_links['first']))
-        $this->_loadFrom($this->_links['first']);
+      // Hit the end of the list
+      $this->_position--;
+      return null;
     }
     elseif ($this->_position >= ($this->_page * $this->_perPage)) {
       // Advancing to the next page
       if (isset($this->_links['next']))
         $this->_loadFrom($this->_links['next']);
     }
+
+    // Calculate "effective position" within the current page
+    $effectivePosition = $this->_position % $this->_perPage;
+
+    return $this->valid() ? $this->_objects[$effectivePosition] : null;
   }
 
   /**
    * Decrements the position to the previous element (wrapping)
    */
   public function prev() {
+    if (empty($this->_count)) {
+      return null;
+    }
+
     $this->_position--;
     if ($this->_position < 0) {
-      // Passed the beginning, looping to the end
-      $this->_position = $this->_count - 1;
-      if (isset($this->_links['last']))
-        $this->_loadFrom($this->_links['last']);
+      // Hit the beginning of the list
+      $this->_position++;
+      return null;
     }
     elseif ($this->_position < (($this->_page - 1) * $this->_perPage)) {
       // Reversing to the previous page
       if (isset($this->_links['prev']))
         $this->_loadFrom($this->_links['prev']);
     }
+
+    // Calculate "effective position" within the current page
+    $effectivePosition = $this->_position % $this->_perPage;
+
+    return $this->valid() ? $this->_objects[$effectivePosition] : null;
   }
 
   /**
