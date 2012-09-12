@@ -1,0 +1,13 @@
+HTTP/1.1 201 Created
+x-vendor-name: Test Vendor
+Location: http://example.com/bills/3ce95db62b1069e59e122c515eb191c70987
+Content-Type: application/json; charset=utf-8
+X-UA-Compatible: IE=Edge,chrome=1
+ETag: "7e70389098ac144655352f663f7c250e"
+Cache-Control: max-age=0, private, must-revalidate
+Set-Cookie: _zipmark-service.git_session=BAh7BkkiD3Nlc3Npb25faWQGOgZFRkkiJTE0ZDIxNDM1NjcxOGNkMTkwZDQyYTYzYjJkMTQ2MGQ2BjsAVA%3D%3D--eaf9b55b735e2f92b3bb7bbfc63e548e4b439f4b; path=/; expires=Tue, 11-Sep-2012 15:21:13 GMT; HttpOnly
+X-Request-Id: d1c0bfd00c50960656ca784acfad9841
+X-Runtime: 0.145320
+Connection: close
+
+{"bill":{"links":[{"rel":"self","href":"http://example.com/bills/3ce95db62b1069e59e122c515eb191c70987"}],"id":"3ce95db62b1069e59e122c515eb191c70987","amount_cents":12345,"memo":"Test Bill #8","identifier":"testbill8","customer_id":null,"currency":"USD","status":"open","recurring":false,"rendered_content":"foo","date":"2012-09-10","created_at":"2012-09-10T15:21:13Z","updated_at":"2012-09-10T15:21:13Z","vendor":{"links":[{"rel":"self","href":"http://example.com/vendors/3e919a6e-d8c1-11e0-9e1f-e394e5601a36"},{"rel":"users","href":"http://example.com/vendors/3e919a6e-d8c1-11e0-9e1f-e394e5601a36/vendor_users"},{"rel":"applications","href":"http://example.com/vendors/3e919a6e-d8c1-11e0-9e1f-e394e5601a36/vendor_applications"},{"rel":"accounts","href":"http://example.com/vendors/3e919a6e-d8c1-11e0-9e1f-e394e5601a36/accounts"},{"rel":"bills","href":"http://example.com/vendors/3e919a6e-d8c1-11e0-9e1f-e394e5601a36/bills"},{"rel":"bill_payments","href":"http://example.com/vendors/3e919a6e-d8c1-11e0-9e1f-e394e5601a36/bill_payments"},{"rel":"bill_templates","href":"http://example.com/vendors/3e919a6e-d8c1-11e0-9e1f-e394e5601a36/bill_templates"},{"rel":"integrations","href":"http://example.com/vendors/3e919a6e-d8c1-11e0-9e1f-e394e5601a36/integrations"}],"id":"3e919a6e-d8c1-11e0-9e1f-e394e5601a36","name":"Test Vendor","identifier":"test_vendor"}}}

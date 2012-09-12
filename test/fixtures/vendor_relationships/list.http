@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+x-vendor-name: Test Vendor
+Content-Type: application/json; charset=utf-8
+X-UA-Compatible: IE=Edge,chrome=1
+ETag: "0f9d0d948914ad5bd85468f99e94b126"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: d5b86126c00f55d327256b109b536d92
+X-Runtime: 0.482524
+Connection: close
+
+{"vendor_relationships":[{"links":[{"rel":"self","href":"http://example.org/vendor_relationships/c7e3998c-0e32-4e33-83dd-f83c2c29ebe5"}],"id":"c7e3998c-0e32-4e33-83dd-f83c2c29ebe5","customer_id":"1234","vendor_id":"a8b5df2c-1073-4bb7-b58d-deffd56d4316","vendor_name":"Test Vendor test-vendor-371"},{"links":[{"rel":"self","href":"http://example.org/vendor_relationships/24a076ae-b08c-413e-b337-e9d87a481f17"}],"id":"24a076ae-b08c-413e-b337-e9d87a481f17","customer_id":"5678","vendor_id":"a8b5df2c-1073-4bb7-b58d-deffd56d4316","vendor_name":"Test Vendor test-vendor-371"}],"meta":{"pagination":{"page":1,"total_pages":1,"total":2,"per_page":30,"first_page":true,"last_page":true}},"links":[{"rel":"first","href":"http://example.org/vendor_relationships?page=1"},{"rel":"last","href":"http://example.org/vendor_relationships?page=1"}]}

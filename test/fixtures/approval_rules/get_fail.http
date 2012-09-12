@@ -1,0 +1,9 @@
+HTTP/1.1 404 Not Found
+Content-Type: application/json; charset=utf-8
+X-UA-Compatible: IE=Edge,chrome=1
+Cache-Control: no-cache
+X-Request-Id: c76d00142657a3930867b00cec612a40
+X-Runtime: 0.060489
+Connection: close
+
+{"error":"Approval Rule not found""}

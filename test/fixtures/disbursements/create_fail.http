@@ -1,0 +1,11 @@
+HTTP/1.1 422 Unprocessable Entity
+x-vendor-name: Test Vendor
+Content-Type: application/json; charset=utf-8
+X-UA-Compatible: IE=Edge,chrome=1
+Cache-Control: no-cache
+Set-Cookie: _zipmark-service.git_session=BAh7BkkiD3Nlc3Npb25faWQGOgZFRkkiJTg1OTgwYTBhNWU2ZDcxYjI2OGMyYTAxYjRhOWY2NjJjBjsAVA%3D%3D--2463eb5a6ecad1a7d9bff185555493c722b4d8cd; path=/; expires=Tue, 11-Sep-2012 16:51:14 GMT; HttpOnly
+X-Request-Id: 654044c9b71a85daa36e3397580e6a21
+X-Runtime: 0.176204
+Connection: close
+
+{"amount_cents":["can't be blank"]}

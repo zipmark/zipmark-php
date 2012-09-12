@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+x-vendor-name: Test Vendor
+Content-Type: application/json; charset=utf-8
+X-UA-Compatible: IE=Edge,chrome=1
+ETag: "762dbfaf5cdd83924883e0902ef9ac80"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: a9bf2192558281b0c1db20338f3fd7be
+X-Runtime: 0.112668
+Connection: close
+
+{"approval_rules":[{"links":[{"rel":"self","href":"http://example.org/approval_rules/3a7edc03-e43a-468b-bbde-004a40f15392"}],"id":"3a7edc03-e43a-468b-bbde-004a40f15392","period":"Monthly","amount_cents":10000,"created_at":"2012-08-31T14:13:58Z","updated_at":"2012-08-31T14:13:58Z"},{"links":[{"rel":"self","href":"http://example.org/approval_rules/8b4b9cf9-c2d4-493c-95f5-511ad1ac666c"}],"id":"8b4b9cf9-c2d4-493c-95f5-511ad1ac666c","period":"Monthly","amount_cents":10000,"created_at":"2012-08-31T14:13:58Z","updated_at":"2012-08-31T14:13:58Z"}],"meta":{"pagination":{"page":1,"total_pages":1,"total":2,"per_page":30,"first_page":true,"last_page":true}},"links":[{"rel":"first","href":"http://example.org/approval_rules?page=1"},{"rel":"last","href":"http://example.org/approval_rules?page=1"}]}

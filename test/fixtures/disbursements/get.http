@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+X-UA-Compatible: IE=Edge,chrome=1
+ETag: "cd9b4fefd11329a88c4cce4e9b60a315"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: bb5b64c4e63deb80568b31bc520c1a93
+X-Runtime: 0.020336
+Connection: close
+
+{"disbursement":{"links":[{"rel":"self","href":"http://example.org/disbursements/b1a42f3e-bf21-4651-8ca4-d716593277db"}],"id":"b1a42f3e-bf21-4651-8ca4-d716593277db","customer_id":"Customer ID","status":"pending","amount_cents":5000,"created_at":"2012-08-01T09:00:00Z","updated_at":"2012-08-01T09:00:00Z"}}
