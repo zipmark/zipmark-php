@@ -25,7 +25,7 @@ class ZipmarkCallbackTest extends UnitTestCase {
 
     $this->assertIsA($callback, 'Zipmark_Callback');
     $this->assertEqual($callback->getHref(), 'http://example.org/callbacks/85172b58-f3e5-46d9-ba61-3c0cf769caa0');
-    // $this->assertEqual($callback->id, '85172b58-f3e5-46d9-ba61-3c0cf769caa0');
+    $this->assertEqual($callback->id, '85172b58-f3e5-46d9-ba61-3c0cf769caa0');
     $this->assertEqual($callback->api_version, "v2");
     $this->assertEqual($callback->event, 'bill.create');
     $this->assertEqual($callback->status, 'active');
