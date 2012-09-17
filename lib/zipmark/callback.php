@@ -23,9 +23,7 @@ class Zipmark_Callback extends Zipmark_Resource {
    * @return Zipmark_Callbacks            A list of Callbacks
    */
   public static function all($params = null, $client = null) {
-    $list = new Zipmark_Callbacks(Zipmark_Client::PATH_CALLBACKS, $client);
-    $list->_loadFrom(Zipmark_Client::PATH_CALLBACKS, $params);
-    return $list;
+    return Zipmark_Callbacks::get($params, $client);
   }
 
   /**
@@ -37,7 +35,8 @@ class Zipmark_Callback extends Zipmark_Resource {
    * @return Zipmark_Callback             The Callback
    */
   public static function get($callbackId, $client = null) {
-    return self::_get(self::pathForCallback($callbackId), $client);
+    $callback = new Zipmark_Callback();
+    return $callback->_get($callback->pathFor($callbackId), $client);
   }
 
   /**
@@ -49,7 +48,7 @@ class Zipmark_Callback extends Zipmark_Resource {
     if (!is_null($client))
       $this->setClient($client);
 
-    $this->_save(Zipmark_Client::POST, Zipmark_Client::PATH_CALLBACKS);
+    $this->_save(Zipmark_Client::POST, $this->pathFor(''));
   }
 
   /**
@@ -64,15 +63,11 @@ class Zipmark_Callback extends Zipmark_Resource {
     $this->_save(Zipmark_Client::PUT, $this->path());
   }
 
-  protected static function pathForCallback($callbackId) {
-    return Zipmark_Client::PATH_CALLBACKS . '/' . rawurlencode($callbackId);
-  }
-
   protected function path() {
     if (!empty($this->_href))
       return $this->getHref();
     else
-      return self::pathForCallback($this->callbackId);
+      return $this->pathFor($this->callbackId);
   }
 }
 

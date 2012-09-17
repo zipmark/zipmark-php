@@ -10,8 +10,9 @@ class Zipmark_VendorRelationships extends Zipmark_Pager {
    * @return Zipmark_VendorRelationships            A list of Disbursements
    */
   public static function get($params = null, $client = null) {
-    $list = new Zipmark_VendorRelationships(Zipmark_Client::PATH_VENDOR_RELATIONSHIPS, $client);
-    $list->_loadFrom(Zipmark_Client::PATH_VENDOR_RELATIONSHIPS, $params);
+    $list = new Zipmark_VendorRelationships(null, $client);
+    $list->setHref($list->pathFor());
+    $list->_loadFrom($list->pathFor(), $params);
     return $list;
   }
 }

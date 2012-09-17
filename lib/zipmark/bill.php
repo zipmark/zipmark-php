@@ -36,9 +36,7 @@ class Zipmark_Bill extends Zipmark_Resource {
    * @return Zipmark_Bills                    A list of Approval Rules
    */
   public static function all($params = null, $client = null) {
-    $list = new Zipmark_Bills(Zipmark_Client::PATH_BILLS, $client);
-    $list->_loadFrom(Zipmark_Client::PATH_BILLS, $params);
-    return $list;
+    return Zipmark_Bills::get($params, $client);
   }
 
   /**
@@ -50,7 +48,8 @@ class Zipmark_Bill extends Zipmark_Resource {
    * @return Zipmark_Bill           The Bill
    */
   public static function get($billId, $client = null) {
-    return self::_get(self::pathForBill($billId), $client);
+    $bill = new Zipmark_Bill();
+    return $bill->_get($bill->pathFor($billId), $client);
   }
 
   /**
@@ -62,7 +61,7 @@ class Zipmark_Bill extends Zipmark_Resource {
     if (!is_null($client))
       $this->setClient($client);
 
-    $this->_save(Zipmark_Client::POST, Zipmark_Client::PATH_BILLS);
+    $this->_save(Zipmark_Client::POST, $this->pathFor(''));
   }
 
   /**
@@ -77,15 +76,11 @@ class Zipmark_Bill extends Zipmark_Resource {
     $this->_save(Zipmark_Client::PUT, $this->path());
   }
 
-  protected static function pathForBill($billId) {
-    return Zipmark_Client::PATH_BILLS . '/' . rawurlencode($billId);
-  }
-
   protected function path() {
     if (!empty($this->_href))
       return $this->getHref();
     else
-      return self::pathForBill($this->billId);
+      return $this->pathFor($this->billId);
   }
 }
 

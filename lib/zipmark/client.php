@@ -155,6 +155,9 @@ class Zipmark_Client {
     $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
+    print $uri;
+    print $response;
+
     /* Layout of a valid response is:
      * Auth challenge response headers
      * Headers after HTTP Digest Auth

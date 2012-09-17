@@ -10,9 +10,7 @@ class Zipmark_ApprovalRule extends Zipmark_Resource {
    * @return Zipmark_ApprovalRules            A list of Approval Rules
    */
   public static function all($params = null, $client = null) {
-    $list = new Zipmark_ApprovalRules(Zipmark_Client::PATH_APPROVAL_RULES, $client);
-    $list->_loadFrom(Zipmark_Client::PATH_APPROVAL_RULES, $params);
-    return $list;
+    return Zipmark_ApprovalRules::get($params, $client);
   }
 
   /**
@@ -24,18 +22,15 @@ class Zipmark_ApprovalRule extends Zipmark_Resource {
    * @return Zipmark_ApprovalRule                 An Approval Rule
    */
   public static function get($approvalRuleId, $client = null) {
-    return self::_get(self::pathForApprovalRule($approvalRuleId), $client);
-  }
-
-  protected static function pathForApprovalRule($approvalRuleId) {
-    return Zipmark_Client::PATH_APPROVAL_RULES . '/' . rawurlencode($approvalRuleId);
+    $approval_rule = new Zipmark_ApprovalRule();
+    return $approval_rule->_get($approval_rule->pathFor($approvalRuleId), $client);
   }
 
   protected function path() {
     if (!empty($this->_href))
       return $this->getHref();
     else
-      return self::pathForApprovalRule($this->approvalRuleId);
+      return $this->pathFor($this->approvalRuleId);
   }
 }
 

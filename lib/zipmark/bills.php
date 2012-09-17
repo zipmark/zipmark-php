@@ -10,8 +10,9 @@ class Zipmark_Bills extends Zipmark_Pager {
    * @return Zipmark_Bills            A list of Bills
    */
   public static function get($params = null, $client = null) {
-    $list = new Zipmark_Bills(Zipmark_Client::PATH_BILLS, $client);
-    $list->_loadFrom(Zipmark_Client::PATH_BILLS, $params);
+    $list = new Zipmark_Bills(null, $client);
+    $list->setHref($list->pathFor());
+    $list->_loadFrom($list->pathFor(), $params);
     return $list;
   }
 }

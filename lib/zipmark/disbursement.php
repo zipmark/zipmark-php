@@ -26,9 +26,7 @@ class Zipmark_Disbursement extends Zipmark_Resource {
    * @return Zipmark_Disbursements            A list of Disbursements
    */
   public static function all($params = null, $client = null) {
-    $list = new Zipmark_Disbursements(Zipmark_Client::PATH_DISBURSEMENTS, $client);
-    $list->_loadFrom(Zipmark_Client::PATH_DISBURSEMENTS, $params);
-    return $list;
+    return Zipmark_Disbursements::get($params, $client);
   }
 
   /**
@@ -40,7 +38,8 @@ class Zipmark_Disbursement extends Zipmark_Resource {
    * @return Zipmark_Disbursement                 The Disbursement
    */
   public static function get($disbursementId, $client = null) {
-    return self::_get(self::pathForDisbursement($disbursementId), $client);
+    $disbursement = new Zipmark_Disbursement();
+    return $disbursement->_get($disbursement->pathFor($disbursementId), $client);
   }
 
   /**
@@ -52,7 +51,7 @@ class Zipmark_Disbursement extends Zipmark_Resource {
     if (!is_null($client))
       $this->setClient($client);
 
-    $this->_save(Zipmark_Client::POST, Zipmark_Client::PATH_DISBURSEMENTS);
+    $this->_save(Zipmark_Client::POST, $this->pathFor(''));
   }
 
   /**
@@ -67,15 +66,11 @@ class Zipmark_Disbursement extends Zipmark_Resource {
     $this->_save(Zipmark_Client::PUT, $this->path());
   }
 
-  protected static function pathForDisbursement($disbursementId) {
-    return Zipmark_Client::PATH_DISBURSEMENTS . '/' . rawurlencode($disbursementId);
-  }
-
   protected function path() {
     if (!empty($this->_href))
       return $this->getHref();
     else
-      return self::pathForDisbursement($this->disbursementId);
+      return $this->pathFor($this->disbursementId);
   }
 }
 

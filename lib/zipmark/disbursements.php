@@ -10,8 +10,9 @@ class Zipmark_Disbursements extends Zipmark_Pager {
    * @return Zipmark_Disbursements            A list of Disbursements
    */
   public static function get($params = null, $client = null) {
-    $list = new Zipmark_Disbursements(Zipmark_Client::PATH_DISBURSEMENTS, $client);
-    $list->_loadFrom(Zipmark_Client::PATH_DISBURSEMENTS, $params);
+    $list = new Zipmark_Disbursements(null, $client);
+    $list->setHref($list->pathFor());
+    $list->_loadFrom($list->pathFor(), $params);
     return $list;
   }
 }

@@ -10,8 +10,9 @@ class Zipmark_Callbacks extends Zipmark_Pager {
    * @return Zipmark_Callbacks            A list of Callbacks
    */
   public static function get($params = null, $client = null) {
-    $list = new Zipmark_Callbacks(Zipmark_Client::PATH_CALLBACKS, $client);
-    $list->_loadFrom(Zipmark_Client::PATH_CALLBACKS, $params);
+    $list = new Zipmark_Callbacks(null, $client);
+    $list->setHref($list->pathFor());
+    $list->_loadFrom($list->pathFor(), $params);
     return $list;
   }
 }
