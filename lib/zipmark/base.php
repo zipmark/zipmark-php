@@ -146,6 +146,24 @@ abstract class Zipmark_Base {
   }
 
   /**
+   * Return an object URL.  If an object ID is provided, return the path to that object.
+   *
+   * @param string  $objId  The Object ID
+   *
+   * @return string         The Object's URL
+   */
+  public function pathFor($objId = null) {
+    $objPath = "PATH_" . strtoupper($this->getObjectName());
+    if (is_null($objId)) {
+      return constant("Zipmark_Client::$objPath");
+    } else {
+      $objPath .= "S";
+      $path = constant("Zipmark_Client::$objPath") . '/' . rawurlencode($objId);
+      return rtrim($path,'/');
+    }
+  }
+
+  /**
    * Mapping from Zipmark class types to PHP classes
    */
   static $classMap = array(

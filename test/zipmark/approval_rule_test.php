@@ -46,6 +46,13 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
 
     $this->assertEqual($response->statusCode, 404);
   }
+
+  function testApprovalRulePath() {
+    $approval_rule = new Zipmark_ApprovalRule();
+    $path = $approval_rule->pathFor("rule123");
+
+    $this->assertEqual($path, "/approval_rules/rule123");
+  }
 }
 
 ?>
