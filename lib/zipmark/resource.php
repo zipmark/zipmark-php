@@ -3,8 +3,6 @@
 abstract class Zipmark_Resource extends Zipmark_Base {
   protected $_values;
 
-  abstract public function getObjectName();
-
   /**
    * Create a new Zipmark_Resource
    *

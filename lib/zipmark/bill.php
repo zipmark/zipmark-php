@@ -33,10 +33,10 @@ class Zipmark_Bill extends Zipmark_Resource {
    * @param  string                   $params Parameters for find
    * @param  Zipmark_Client           $client Client object to connect to service
    *
-   * @return Zipmark_BillList                 A list of Approval Rules
+   * @return Zipmark_Bills                    A list of Approval Rules
    */
   public static function all($params = null, $client = null) {
-    $list = new Zipmark_BillList(Zipmark_Client::PATH_BILLS, $client);
+    $list = new Zipmark_Bills(Zipmark_Client::PATH_BILLS, $client);
     $list->_loadFrom(Zipmark_Client::PATH_BILLS, $params);
     return $list;
   }
@@ -75,15 +75,6 @@ class Zipmark_Bill extends Zipmark_Resource {
       $this->setClient($client);
 
     $this->_save(Zipmark_Client::PUT, $this->path());
-  }
-
-  /**
-   * Provide the object's name
-   *
-   * @return string The Object Name
-   */
-  public function getObjectName() {
-    return 'bill';
   }
 
   protected static function pathForBill($billId) {

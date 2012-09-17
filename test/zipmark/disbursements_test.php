@@ -1,15 +1,15 @@
 <?php
 
-class Zipmark_DisbursementListTest extends UnitTestCase {
-  public function testDisbursementListGet() {
+class Zipmark_DisbursementsTest extends UnitTestCase {
+  public function testDisbursementsGet() {
     $response = loadFixture('disbursements/list.http');
 
     $client = new MockZipmark_Client();
     $client->returns('request', $response, array('GET', '/disbursements'));
 
-    $disbursements = Zipmark_DisbursementList::get(null, $client);
+    $disbursements = Zipmark_Disbursements::get(null, $client);
 
-    $this->assertIsA($disbursements, 'Zipmark_DisbursementList');
+    $this->assertIsA($disbursements, 'Zipmark_Disbursements');
     $this->assertEqual($disbursements->getHref(), '/disbursements');
     $this->assertEqual($disbursements->count(), 2);
     $this->assertEqual($response->statusCode, 200);

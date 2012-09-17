@@ -18,16 +18,16 @@ class AllTests extends TestSuite {
     $rootPath = dirname(__FILE__) . "/../";
     $this->TestSuite('All tests');
     $this->addFile($rootPath . "test/zipmark/pager_test.php");
-    $this->addFile($rootPath . "test/zipmark/approval_rule_list_test.php");
     $this->addFile($rootPath . "test/zipmark/approval_rule_test.php");
+    $this->addFile($rootPath . "test/zipmark/approval_rules_test.php");
     $this->addFile($rootPath . "test/zipmark/bill_test.php");
-    $this->addFile($rootPath . "test/zipmark/bill_list_test.php");
+    $this->addFile($rootPath . "test/zipmark/bills_test.php");
     $this->addFile($rootPath . "test/zipmark/callback_test.php");
-    $this->addFile($rootPath . "test/zipmark/callback_list_test.php");
+    $this->addFile($rootPath . "test/zipmark/callbacks_test.php");
     $this->addFile($rootPath . "test/zipmark/disbursement_test.php");
-    $this->addFile($rootPath . "test/zipmark/disbursement_list_test.php");
+    $this->addFile($rootPath . "test/zipmark/disbursements_test.php");
     $this->addFile($rootPath . "test/zipmark/vendor_relationship_test.php");
-    $this->addFile($rootPath . "test/zipmark/vendor_relationship_list_test.php");
+    $this->addFile($rootPath . "test/zipmark/vendor_relationships_test.php");
   }
 }
 

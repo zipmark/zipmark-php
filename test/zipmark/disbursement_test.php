@@ -9,7 +9,7 @@ class ZipmarkDisbursementTest extends UnitTestCase {
 
     $disbursements = Zipmark_Disbursement::all(null, $client);
 
-    $this->assertIsA($disbursements, 'Zipmark_DisbursementList');
+    $this->assertIsA($disbursements, 'Zipmark_Disbursements');
     $this->assertEqual($disbursements->getHref(), '/disbursements');
     $this->assertEqual($disbursements->count(), 2);
     $this->assertEqual($response->statusCode, 200);

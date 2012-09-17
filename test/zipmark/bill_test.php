@@ -9,7 +9,7 @@ class ZipmarkBillTest extends UnitTestCase {
 
     $bills = Zipmark_Bill::all(null, $client);
 
-    $this->assertIsA($bills, 'Zipmark_BillList');
+    $this->assertIsA($bills, 'Zipmark_Bills');
     $this->assertEqual($bills->getHref(), '/bills');
     $this->assertEqual($bills->count(), 22);
     $this->assertEqual($response->statusCode, 200);

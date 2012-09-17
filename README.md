@@ -140,7 +140,7 @@ $bill->update();
 Retrieve a list of all bills.  The client understands Zipmark's pagination system.  It loads one page of objects at a time and will retrieve more objects as necessary while iterating through the objects.
 
 ```php
-$bills = Zipmark_Bill::all();
+$bills = Zipmark_Bills::get();
 ```
 
 Get the number of objects available.

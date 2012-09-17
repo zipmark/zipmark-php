@@ -15,8 +15,6 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
   protected $_count;      // Total number of resources
   protected $_objects;    // Current page of resources
 
-  abstract public function getObjectName();
-
   /**
    * Number of records in the list.
    *

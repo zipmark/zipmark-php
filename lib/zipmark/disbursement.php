@@ -23,10 +23,10 @@ class Zipmark_Disbursement extends Zipmark_Resource {
    * @param  string                   $params Parameters for find
    * @param  Zipmark_Client           $client Client object to connect to service
    *
-   * @return Zipmark_DisbursementList         A list of Disbursements
+   * @return Zipmark_Disbursements            A list of Disbursements
    */
   public static function all($params = null, $client = null) {
-    $list = new Zipmark_DisbursementList(Zipmark_Client::PATH_DISBURSEMENTS, $client);
+    $list = new Zipmark_Disbursements(Zipmark_Client::PATH_DISBURSEMENTS, $client);
     $list->_loadFrom(Zipmark_Client::PATH_DISBURSEMENTS, $params);
     return $list;
   }
@@ -65,15 +65,6 @@ class Zipmark_Disbursement extends Zipmark_Resource {
       $this->setClient($client);
 
     $this->_save(Zipmark_Client::PUT, $this->path());
-  }
-
-  /**
-   * Provide the object's name
-   *
-   * @return string The Object Name
-   */
-  public function getObjectName() {
-    return 'disbursement';
   }
 
   protected static function pathForDisbursement($disbursementId) {

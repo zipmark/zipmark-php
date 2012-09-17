@@ -111,6 +111,41 @@ abstract class Zipmark_Base {
   }
 
   /**
+   * Get the object name from the class name
+   *
+   * Ex: Zipmark_Bill -> Bill
+   *     Zipmark_VendorRelationships -> VendorRelationships
+   *
+   * @param boolean $camelized Whether to return camel case or not
+   */
+  public function getObjectName($camelized = false) {
+    $name = get_class($this);
+    $parts = explode('_', $name);
+    $resourceName = end($parts);
+    if ($camelized) {
+      return $resourceName;
+    } else {
+      return self::decamelize($resourceName);
+    }
+  }
+
+  public static function decamelize($word) {
+    return preg_replace(
+      '/(^|[a-z])([A-Z])/e',
+      'strtolower(strlen("\\1") ? "\\1_\\2" : "\\2")',
+      $word
+    );
+  }
+
+  public static function camelize($word) {
+    return preg_replace(
+      '/(^|_)([a-z])/e',
+      'strtoupper("\\2")',
+      $word
+    );
+  }
+
+  /**
    * Mapping from Zipmark class types to PHP classes
    */
   static $classMap = array(

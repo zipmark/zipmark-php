@@ -20,10 +20,10 @@ class Zipmark_Callback extends Zipmark_Resource {
    * @param  string               $params Parameters for find
    * @param  Zipmark_Client       $client Client object to connect to service
    *
-   * @return Zipmark_CallbackList         A list of Callbacks
+   * @return Zipmark_Callbacks            A list of Callbacks
    */
   public static function all($params = null, $client = null) {
-    $list = new Zipmark_CallbackList(Zipmark_Client::PATH_CALLBACKS, $client);
+    $list = new Zipmark_Callbacks(Zipmark_Client::PATH_CALLBACKS, $client);
     $list->_loadFrom(Zipmark_Client::PATH_CALLBACKS, $params);
     return $list;
   }
@@ -62,15 +62,6 @@ class Zipmark_Callback extends Zipmark_Resource {
       $this->setClient($client);
 
     $this->_save(Zipmark_Client::PUT, $this->path());
-  }
-
-  /**
-   * Provide the object's name
-   *
-   * @return string The Object Name
-   */
-  public function getObjectName() {
-    return 'callback';
   }
 
   protected static function pathForCallback($callbackId) {

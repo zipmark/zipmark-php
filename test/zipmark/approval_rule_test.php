@@ -9,7 +9,7 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
 
     $approval_rules = Zipmark_ApprovalRule::all(null, $client);
 
-    $this->assertIsA($approval_rules, 'Zipmark_ApprovalRuleList');
+    $this->assertIsA($approval_rules, 'Zipmark_ApprovalRules');
     $this->assertEqual($approval_rules->getHref(), '/approval_rules');
     $this->assertEqual($approval_rules->count(), 2);
     $this->assertEqual($response->statusCode, 200);
