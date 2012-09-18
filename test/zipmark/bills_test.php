@@ -4,10 +4,12 @@ class Zipmark_BillsTest extends UnitTestCase {
   public function testBillsGet() {
     $response = loadFixture('bills/list.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/bills'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/bills', null));
 
-    $bills = Zipmark_Bills::get(null, $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $bills = $client->bills->get();
 
     $this->assertIsA($bills, 'Zipmark_Bills');
     $this->assertEqual($bills->getHref(), '/bills');

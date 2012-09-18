@@ -66,16 +66,10 @@ $client = new Zipmark_Client("Application Identifier", "Application Secret", Pro
 
 Application Identifier and Application Secret should be replaced with the vendor application identifier and secret provided by Zipmark.
 
-ProductionEnabled is a boolean flag that indicates whether traffic for this client is live production traffic.  Omitting this argument will result in all traffic being directed to Zipmark's sandbox environment.  Production mode can also be enabled with the following:
+ProductionEnabled is a boolean flag that indicates whether traffic for this client is live production traffic.  Omitting this argument will result in all traffic being directed to Zipmark's sandbox environment.  If the ProductionEnabled flag is omitted, production mode can also be enabled with the following:
 
 ```php
 $client->setProduction(true);
-```
-
-### Loading all bills
-
-```php
-$bills = $client->bills->get();
 ```
 
 ### Loading a Bill from a known Bill ID

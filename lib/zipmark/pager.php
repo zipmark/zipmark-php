@@ -35,9 +35,7 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
    */
   public function count() {
     if (empty($this->_count)) {
-      if (is_null($this->_client))
-        $this->_client = new Zipmark_Client();
-      $response = $this->_client->request(Zipmark_Client::GET, $this->_href);
+      $response = $this->_client->request(Zipmark_Client::GET, $this->pathFor());
       $response->checkResponse();
       $this->_loadPageMetadata($response);
     }
@@ -171,9 +169,6 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
    * Load a page of results into this pager.
    */
   public function _loadFrom($path, $params = null) {
-    if (is_null($this->_client))
-      $this->_client = new Zipmark_Client();
-
     if (!is_null($params) && is_array($params)) {
       $vals = array();
       foreach ($params as $k => $v) {
@@ -231,7 +226,7 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
     $parsedBody = json_decode($response->body, true);
 
     $objects = $parsedBody[$objName];
-    $classType = Zipmark_Pager::$collectionToObjectMap[$objName];
+    $classType = Zipmark_Base::getClassName(rtrim($objName, 's'));
 
     foreach ($objects as $object) {
       $newObj = new $classType();
@@ -258,18 +253,6 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
       }
     }
   }
-
-  /**
-   * Mapping to determine the type of objects in
-   * a collection based on the Zipmark class type
-   */
-  static $collectionToObjectMap = array(
-    'approval_rules'                 => 'Zipmark_ApprovalRule',
-    'bills'                          => 'Zipmark_Bill',
-    'callbacks'                      => 'Zipmark_Callback',
-    'disbursements'                  => 'Zipmark_Disbursement',
-    'vendor_relationships'           => 'Zipmark_VendorRelationship',
-  );
 }
 
 ?>

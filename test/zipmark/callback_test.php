@@ -1,27 +1,15 @@
 <?php
 
 class ZipmarkCallbackTest extends UnitTestCase {
-  function testCallbackAll() {
-    $response = loadFixture('callbacks/list.http');
-
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/callbacks'));
-
-    $callbacks = Zipmark_Callback::all(null, $client);
-
-    $this->assertIsA($callbacks, 'Zipmark_Callbacks');
-    $this->assertEqual($callbacks->getHref(), '/callbacks');
-    $this->assertEqual($callbacks->count(), 2);
-    $this->assertEqual($response->statusCode, 200);
-  }
-
   function testCallbackGet() {
     $response = loadFixture('callbacks/get.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/callbacks/85172b58-f3e5-46d9-ba61-3c0cf769caa0'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/callbacks/85172b58-f3e5-46d9-ba61-3c0cf769caa0', null));
 
-    $callback = Zipmark_Callback::get('85172b58-f3e5-46d9-ba61-3c0cf769caa0', $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $callback = $client->callback->get('85172b58-f3e5-46d9-ba61-3c0cf769caa0', $client);
 
     $this->assertIsA($callback, 'Zipmark_Callback');
     $this->assertEqual($callback->getHref(), 'http://example.org/callbacks/85172b58-f3e5-46d9-ba61-3c0cf769caa0');
@@ -38,10 +26,12 @@ class ZipmarkCallbackTest extends UnitTestCase {
     $callback = new Zipmark_Callback();
     $callback->event = 'bill.update';
     $callback->url = 'https://example.com/callbacks';
-    
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('POST', '/callbacks', $callback->toJson()));
 
+    $http = new MockZipmark_Http();
+    $http->returns('POST', $response, array('/callbacks', $callback->toJson()));
+
+    $client = new Zipmark_Client(null, null, false, null, $http);
+    
     $callback->create($client);
 
     $this->assertIsA($callback, 'Zipmark_Callback');
@@ -58,8 +48,10 @@ class ZipmarkCallbackTest extends UnitTestCase {
     $callback->event = 'bill.create';
     $callback->url = 'http://example.com/callbacks';
     
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('POST', '/callbacks', $callback->toJson()));
+    $http = new MockZipmark_Http();
+    $http->returns('POST', $response, array('/callbacks', $callback->toJson()));
+
+    $client = new Zipmark_Client(null, null, false, null, $http);
 
     try {
       $callback->create($client);

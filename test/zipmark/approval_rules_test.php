@@ -4,10 +4,12 @@ class Zipmark_ApprovalRulesTest extends UnitTestCase {
   public function testApprovalRulesGet() {
     $response = loadFixture('approval_rules/list.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/approval_rules'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/approval_rules', null));
 
-    $approval_rules = Zipmark_ApprovalRules::get(null, $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $approval_rules = $client->approval_rules->get();
 
     $this->assertIsA($approval_rules, 'Zipmark_ApprovalRules');
     $this->assertEqual($approval_rules->getHref(), '/approval_rules');

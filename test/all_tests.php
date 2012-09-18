@@ -11,7 +11,7 @@ require_once('test_helpers.php');
 error_reporting(E_ALL);
 ini_set('display_errors','On');
 
-Mock::generate('Zipmark_Client');
+Mock::generate('Zipmark_Http', 'MockZipmark_Http', array('GET', 'POST', 'PUT'));
 
 class AllTests extends TestSuite {
   function AllTests() {
@@ -26,7 +26,6 @@ class AllTests extends TestSuite {
     $this->addFile($rootPath . "test/zipmark/callbacks_test.php");
     $this->addFile($rootPath . "test/zipmark/disbursement_test.php");
     $this->addFile($rootPath . "test/zipmark/disbursements_test.php");
-    $this->addFile($rootPath . "test/zipmark/vendor_relationship_test.php");
     $this->addFile($rootPath . "test/zipmark/vendor_relationships_test.php");
   }
 }

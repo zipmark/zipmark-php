@@ -4,10 +4,12 @@ class Zipmark_DisbursementsTest extends UnitTestCase {
   public function testDisbursementsGet() {
     $response = loadFixture('disbursements/list.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/disbursements'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/disbursements', null));
 
-    $disbursements = Zipmark_Disbursements::get(null, $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $disbursements = $client->disbursements->get();
 
     $this->assertIsA($disbursements, 'Zipmark_Disbursements');
     $this->assertEqual($disbursements->getHref(), '/disbursements');

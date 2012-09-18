@@ -1,27 +1,15 @@
 <?php
 
 class ZipmarkDisbursementTest extends UnitTestCase {
-  function testDisbursementAll() {
-    $response = loadFixture('disbursements/list.http');
-
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/disbursements'));
-
-    $disbursements = Zipmark_Disbursement::all(null, $client);
-
-    $this->assertIsA($disbursements, 'Zipmark_Disbursements');
-    $this->assertEqual($disbursements->getHref(), '/disbursements');
-    $this->assertEqual($disbursements->count(), 2);
-    $this->assertEqual($response->statusCode, 200);
-  }
-
   function testDisbursementGet() {
     $response = loadFixture('disbursements/get.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/disbursements/b1a42f3e-bf21-4651-8ca4-d716593277db'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/disbursements/b1a42f3e-bf21-4651-8ca4-d716593277db', null));
 
-    $disbursement = Zipmark_Disbursement::get('b1a42f3e-bf21-4651-8ca4-d716593277db', $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $disbursement = $client->disbursement->get('b1a42f3e-bf21-4651-8ca4-d716593277db', $client);
 
     $this->assertIsA($disbursement, 'Zipmark_Disbursement');
     $this->assertEqual($disbursement->getHref(), 'http://example.org/disbursements/b1a42f3e-bf21-4651-8ca4-d716593277db');
@@ -39,8 +27,10 @@ class ZipmarkDisbursementTest extends UnitTestCase {
     $disbursement->customer_id = 'abc123';
     $disbursement->amount_cents = 5000;
     
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('POST', '/disbursements', $disbursement->toJson()));
+    $http = new MockZipmark_Http();
+    $http->returns('POST', $response, array('/disbursements', $disbursement->toJson()));
+
+    $client = new Zipmark_Client(null, null, false, null, $http);
 
     $disbursement->create($client);
 
@@ -58,8 +48,10 @@ class ZipmarkDisbursementTest extends UnitTestCase {
     $disbursement->user_email = 'test@example.com';
     $disbursement->customer_id = 'abc123';
     
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('POST', '/disbursements', $disbursement->toJson()));
+    $http = new MockZipmark_Http();
+    $http->returns('POST', $response, array('/disbursements', $disbursement->toJson()));
+
+    $client = new Zipmark_Client(null, null, false, null, $http);
 
     try {
       $disbursement->create($client);

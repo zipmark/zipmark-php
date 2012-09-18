@@ -57,7 +57,6 @@ abstract class Zipmark_Base {
    * GET the specified path, validate the response and return the resulting object
    *
    * @param string        $path   Relative path to the desired resource
-   * @param string        $client Optional client for the request, useful for mocking the client
    *
    * @return Zipmark_Base         A Zipmark Object of type TBD
    */
@@ -65,46 +64,6 @@ abstract class Zipmark_Base {
     $response = $this->_client->request(Zipmark_Client::GET, $path);
     $response->checkResponse();
     return Zipmark_Base::_parseJsonToNewObject($response->body, $this->_client);
-  }
-
-  /**
-   * POST to the specified path, validate the response and return the resulting object
-   *
-   * @param string        $path   Relative path to the desired resource
-   * @param string        $data   Data to post
-   * @param string        $client Optional client for the request, useful for mocking the client
-   *
-   * @return Zipmark_Base         A Zipmark Object of type TBD
-   */
-  public static function _post($path, $data = null, $client = null) {
-    if (is_null($client))
-      $client = new Zipmark_Client();
-
-    $response = $client->request(Zipmark_Client::POST, $path, $data);
-    $response->checkResponse();
-    $object = Zipmark_Base::_parseJsonToNewObject($response->body, $client);
-    $response->checkResponse($object);
-    return $object;
-  }
-
-  /**
-   * PUT to the specified path, validate the response and return the resulting object
-   *
-   * @param string        $path   Relative path to the desired resource
-   * @param string        $data   Data to put
-   * @param string        $client Optional client for the request, useful for mocking the client
-   *
-   * @return Zipmark_Base         A Zipmark Object of type TBD
-   */
-  public static function _put($path, $data = null, $client = null) {
-    if (is_null($client))
-      $client = new Zipmark_Client();
-
-    $response = $client->request(Zipmark_Client::PUT, $path, $data);
-    $response->checkResponse();
-    $object = Zipmark_Base::_parseJsonToNewObject($response->body, $client);
-    $response->checkResponse($object);
-    return $object;
   }
 
   /**

@@ -4,10 +4,12 @@ class Zipmark_PagerTest extends UnitTestCase {
   public function testPagerPointers() {
     $response = loadFixture('bills/list_p1_of_3.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/bills'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/bills', null));
 
-    $bills = Zipmark_Bill::all(null, $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $bills = $client->bills->get();
 
     $this->assertEqual($bills->key(), 0);
     $this->assertEqual($bills->count(), 8);
@@ -19,10 +21,12 @@ class Zipmark_PagerTest extends UnitTestCase {
   public function testNextPrev() {
     $response = loadFixture('bills/list_p1_of_3.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/bills'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/bills', null));
 
-    $bills = Zipmark_Bill::all(null, $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $bills = $client->bills->get();
 
     $currentBill = $bills->current();
 
@@ -47,12 +51,14 @@ class Zipmark_PagerTest extends UnitTestCase {
     $responsePage1 = loadFixture('bills/list_p1_of_3.http');
     $responsePage2 = loadFixture('bills/list_p2_of_3.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $responsePage1, array('GET', '/bills'));
-    $client->returns('request', $responsePage1, array('GET', 'http://example.org/bills?page=1'));
-    $client->returns('request', $responsePage2, array('GET', 'http://example.org/bills?page=2'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $responsePage1, array('/bills', null));
+    $http->returns('GET', $responsePage1, array('http://example.org/bills?page=1', null));
+    $http->returns('GET', $responsePage2, array('http://example.org/bills?page=2', null));
 
-    $bills = Zipmark_Bill::all(null, $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $bills = $client->bills->get();
 
     $this->assertEqual($bills->page(), 1);
     $this->assertEqual($bills->perPage(), 3);
@@ -71,13 +77,15 @@ class Zipmark_PagerTest extends UnitTestCase {
     $responsePage2 = loadFixture('bills/list_p2_of_3.http');
     $responsePage3 = loadFixture('bills/list_p3_of_3.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $responsePage1, array('GET', '/bills'));
-    $client->returns('request', $responsePage1, array('GET', 'http://example.org/bills?page=1'));
-    $client->returns('request', $responsePage2, array('GET', 'http://example.org/bills?page=2'));
-    $client->returns('request', $responsePage3, array('GET', 'http://example.org/bills?page=3'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $responsePage1, array('/bills', null));
+    $http->returns('GET', $responsePage1, array('http://example.org/bills?page=1', null));
+    $http->returns('GET', $responsePage2, array('http://example.org/bills?page=2', null));
+    $http->returns('GET', $responsePage3, array('http://example.org/bills?page=3', null));
 
-    $bills = Zipmark_Bill::all(null, $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $bills = $client->bills->get();
 
     $this->assertEqual($bills->key(), 0);
     $this->assertEqual($bills->page(), 1);

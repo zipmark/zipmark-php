@@ -1,27 +1,15 @@
 <?php
 
 class ZipmarkApprovalRuleTest extends UnitTestCase {
-  function testApprovalRuleAll() {
-    $response = loadFixture('approval_rules/list.http');
-
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/approval_rules'));
-
-    $approval_rules = Zipmark_ApprovalRule::all(null, $client);
-
-    $this->assertIsA($approval_rules, 'Zipmark_ApprovalRules');
-    $this->assertEqual($approval_rules->getHref(), '/approval_rules');
-    $this->assertEqual($approval_rules->count(), 2);
-    $this->assertEqual($response->statusCode, 200);
-  }
-  
   function testApprovalRuleGet() {
     $response = loadFixture('approval_rules/get.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3', null));
 
-    $approval_rule = Zipmark_ApprovalRule::get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3', $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $approval_rule = $client->approval_rule->get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
 
     $this->assertIsA($approval_rule, 'Zipmark_ApprovalRule');
     $this->assertEqual($approval_rule->getHref(), 'http://example.org/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
@@ -33,11 +21,13 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
   function testApprovalRuleGetFail() {
     $response = loadFixture('approval_rules/get_fail.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3', null));
 
+    $client = new Zipmark_Client(null, null, false, null, $http);
+    
     try {
-      $approval_rule = Zipmark_ApprovalRule::get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3', $client);
+      $approval_rule = $client->approval_rule->get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
       $this->fail("Expected Zipmark_NotFoundError");
     }
     catch (Zipmark_NotFoundError $e) {

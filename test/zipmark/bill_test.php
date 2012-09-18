@@ -1,27 +1,15 @@
 <?php
 
 class ZipmarkBillTest extends UnitTestCase {
-  function testBillAll() {
-    $response = loadFixture('bills/list.http');
-
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/bills'));
-
-    $bills = Zipmark_Bill::all(null, $client);
-
-    $this->assertIsA($bills, 'Zipmark_Bills');
-    $this->assertEqual($bills->getHref(), '/bills');
-    $this->assertEqual($bills->count(), 22);
-    $this->assertEqual($response->statusCode, 200);
-  }
-
   function testBillGet() {
     $response = loadFixture('bills/get.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b', null));
 
-    $bill = Zipmark_Bill::get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1b', $client);
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $bill = $client->bill->get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
 
     $this->assertIsA($bill, 'Zipmark_Bill');
     $this->assertEqual($bill->getHref(), 'http://example.org/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
@@ -44,11 +32,13 @@ class ZipmarkBillTest extends UnitTestCase {
   function testBillGetFail() {
     $response = loadFixture('bills/get_fail.http');
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('GET', '/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1c'));
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $response, array('/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1c', null));
+
+    $client = new Zipmark_Client(null, null, false, null, $http);
 
     try {
-      $bill = Zipmark_Bill::get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1c', $client);
+      $bill = $client->bill->get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1c');
       $this->fail("Expected Zipmark_NotFoundError");
     }
     catch (Zipmark_NotFoundError $e) {
@@ -69,8 +59,10 @@ class ZipmarkBillTest extends UnitTestCase {
     $bill->date = '2012-09-10';
     $bill->content = '{"content":"foo"}';
 
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('POST', '/bills', $bill->toJson()));
+    $http = new MockZipmark_Http();
+    $http->returns('POST', $response, array('/bills', $bill->toJson()));
+
+    $client = new Zipmark_Client(null, null, false, null, $http);
 
     $bill->create($client);
 
@@ -93,8 +85,10 @@ class ZipmarkBillTest extends UnitTestCase {
     $bill->amount_cents = 12345;
     $bill->memo = 'Test Bill Create Fail';
     
-    $client = new MockZipmark_Client();
-    $client->returns('request', $response, array('POST', '/bills', $bill->toJson()));
+    $http = new MockZipmark_Http();
+    $http->returns('POST', $response, array('/bills', $bill->toJson()));
+
+    $client = new Zipmark_Client(null, null, false, null, $http);
 
     try {
       $bill->create($client);
