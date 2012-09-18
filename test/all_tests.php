@@ -17,7 +17,7 @@ class AllTests extends TestSuite {
   function AllTests() {
     $rootPath = dirname(__FILE__) . "/../";
     $this->TestSuite('All tests');
-    $this->addFile($rootPath . "test/zipmark/pager_test.php");
+    $this->addFile($rootPath . "test/zipmark/collection_test.php");
     $this->addFile($rootPath . "test/zipmark/approval_rule_test.php");
     $this->addFile($rootPath . "test/zipmark/approval_rules_test.php");
     $this->addFile($rootPath . "test/zipmark/bill_test.php");

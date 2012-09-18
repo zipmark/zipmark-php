@@ -9,7 +9,7 @@ require_once('zipmark/http.php');
 require_once('zipmark/client.php');
 require_once('zipmark/client_response.php');
 require_once('zipmark/errors.php');
-require_once('zipmark/pager.php');
+require_once('zipmark/collection.php');
 require_once('zipmark/resource.php');
 require_once('zipmark/editable_resource.php');
 

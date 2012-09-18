@@ -192,7 +192,7 @@ abstract class Zipmark_Base {
     $href = Zipmark_Base::_findSelfHref($parsedObject);
     if (!empty($href))
       $newObj->setHref($href);
-    else if ($newObj instanceof Zipmark_Pager) {
+    else if ($newObj instanceof Zipmark_Collection) {
       $newObj->_count = Zipmark_Base::_numRecords($parsedObject);
     }
 

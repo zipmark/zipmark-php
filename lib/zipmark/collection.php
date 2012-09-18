@@ -7,7 +7,7 @@
  * Iterating past the last item in either direction returns a 
  * null and leaves the pointer unchanged.
  */
-abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
+abstract class Zipmark_Collection extends Zipmark_Base implements Iterator {
   private $_position = 0; // Position within the current page
   protected $_page;       // Current page number
   protected $_totalPages; // Total number of pages
@@ -18,9 +18,9 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
   /**
    * Find all objects
    *
-   * @param  string           $params Parameters for find
+   * @param  string             $params Parameters for find
    *
-   * @return Zipmark_Pager            A list of objects
+   * @return Zipmark_Collection         A list of objects
    */
   public function get($params = null) {
     $this->setHref($this->pathFor());
@@ -166,7 +166,7 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
   }
 
   /**
-   * Load a page of results into this pager.
+   * Load a page of results into this collection.
    */
   public function _loadFrom($path, $params = null) {
     if (!is_null($params) && is_array($params)) {
@@ -231,10 +231,10 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
     foreach ($objects as $object) {
       $newObj = new $classType();
 
-      $href = Zipmark_Pager::_findObjectHref($object);
+      $href = Zipmark_Collection::_findObjectHref($object);
       if (!empty($href))
         $newObj->setHref($href);
-      else if ($newObj instanceof Zipmark_Pager) {
+      else if ($newObj instanceof Zipmark_Collection) {
         $newObj->_count = Zipmark_Base::_numRecords($object);
       }
 

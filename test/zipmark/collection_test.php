@@ -1,7 +1,7 @@
 <?php
 
-class Zipmark_PagerTest extends UnitTestCase {
-  public function testPagerPointers() {
+class Zipmark_CollectionTest extends UnitTestCase {
+  public function testCollectionPointers() {
     $response = loadFixture('bills/list_p1_of_3.http');
 
     $http = new MockZipmark_Http();
