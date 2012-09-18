@@ -129,6 +129,13 @@ abstract class Zipmark_Base {
     }
   }
 
+  /**
+   * Decamelize a string
+   *
+   * Ex: TheStringToDecamelize -> the_string_to_decamelize
+   *
+   * @param string $word The string to be decamelized
+   */
   public static function decamelize($word) {
     return preg_replace(
       '/(^|[a-z])([A-Z])/e',
@@ -137,12 +144,38 @@ abstract class Zipmark_Base {
     );
   }
 
+  /**
+   * Camelize a string
+   *
+   * Ex: the_string_to_camelize -> TheStringToCamelize
+   *
+   * @param string $word The string to be camelized
+   */
   public static function camelize($word) {
     return preg_replace(
       '/(^|_)([a-z])/e',
       'strtoupper("\\2")',
       $word
     );
+  }
+
+  /**
+   * Map and validate JSON object names to PHP Class Names
+   *
+   * Ex: bill -> Zipmark_Bill
+   *
+   * @param string $objectName The object name from JSON API return
+   *
+   * @return mixed             The PHP Class Name (if valid)
+   *                           null (if invalid)
+   */
+  public static function classMap($objectName) {
+    $objectClass = "Zipmark_" . self::camelize($objectName);
+
+    if (class_exists($objectClass))
+      return $objectClass;
+    else
+      return null;
   }
 
   /**
@@ -162,23 +195,6 @@ abstract class Zipmark_Base {
       return rtrim($path,'/');
     }
   }
-
-  /**
-   * Mapping from Zipmark class types to PHP classes
-   */
-  static $classMap = array(
-    'approval_rules'       => 'Zipmark_ApprovalRuleList',
-    'approval_rule'        => 'Zipmark_ApprovalRule',
-    'bills'                => 'Zipmark_BillList',
-    'bill'                 => 'Zipmark_Bill',
-    'callbacks'            => 'Zipmark_CallbackList',
-    'callback'             => 'Zipmark_Callback',
-    'disbursements'        => 'Zipmark_DisbursmentList',
-    'disbursement'         => 'Zipmark_Disbursement',
-    'vendor'               => 'Zipmark_Vendor',
-    'vendor_relationships' => 'Zipmark_VendorRelationshipList',
-    'vendor_relationship'  => 'Zipmark_VendorRelationship',
-  );
 
   protected static function _parseJsonToNewObject($json, $client = null) {
     $parsedObject = json_decode($json, true);
@@ -206,19 +222,12 @@ abstract class Zipmark_Base {
 
   private static function _createObject($parsedObject) {
     $objName = key($parsedObject);
+    $objClass = self::classMap($objName);
 
-    if (!array_key_exists($objName, Zipmark_Base::$classMap)) {
-      return null; // Unknown element
-    }
-
-    $objClass = Zipmark_Base::$classMap[$objName];
-
-    if ($objClass == null)
+    if (!$objClass)
       return new Zipmark_Object();
-    else if ($objClass == 'array')
-      return array();
-    else
-      $newObj = new $objClass();
+
+    $newObj = new $objClass();
 
     $href = Zipmark_Base::_findSelfHref($parsedObject);
     if (!empty($href))
@@ -236,7 +245,8 @@ abstract class Zipmark_Base {
     switch (gettype($objV)) {
       case 'array':
         foreach ($objV as $k => $v) {
-          if (array_key_exists($k, Zipmark_Base::$classMap))
+          $objClass = self::classMap($k);
+          if ($objClass)
             $obj->$k = self::_createObject(array($k => $v));
           else if ($k == "links")
             $obj->$k = $v;
