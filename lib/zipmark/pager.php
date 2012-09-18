@@ -16,6 +16,19 @@ abstract class Zipmark_Pager extends Zipmark_Base implements Iterator {
   protected $_objects;    // Current page of resources
 
   /**
+   * Find all objects
+   *
+   * @param  string           $params Parameters for find
+   *
+   * @return Zipmark_Pager            A list of objects
+   */
+  public function get($params = null) {
+    $this->setHref($this->pathFor());
+    $this->_loadFrom($this->pathFor(), $params);
+    return $this;
+  }
+
+  /**
    * Number of records in the list.
    *
    * @return integer number of records in the list

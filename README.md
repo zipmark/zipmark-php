@@ -54,57 +54,34 @@ The Zipmark PHP Client supports both global and local client credentials.  The c
 require_once('./lib/zipmark.php');
 ```
 
-### Global Credentials
-
-Global credentials are used when the client application is functioning on behalf of a single Zipmark vendor.  Credentials are set as follows:
-
-```php
-Zipmark_Client::$appId = 'AbCdEfGhIjKlMnOpQrStUvWxYz0123456789';
-Zipmark_Client::$appSecret = 'AbCdEfGhIjKlMnOpQrStUvWxYz0123456789AbCdEfGhIjKlMnOpQrStUvWxYz0123456789';
-```
-
-### Local Credentials
-
-Local credentials are used when the client application must function on behalf of multiple Zipmark vendors.  In this case, credentials are set per client as follows:
-
-```php
-$client = new Zipmark_Client("application id", "application_secret");
-```
-
-The $client object must then be passed into objects that will be making requests to the Zipmark service.
-
-### Production Environment
-
-The client will connect to Zipmark's sandbox environment by default.  To use the client in Zipmark's production environment, set the Production API flag:
-
-```php
-Zipmark_Client::$apiProduction = true;
-```
-
 ## Usage Examples
 
 The Zipmark PHP client supports objects and lists of objects.  
 
-### Global vs. Local Credential Actions
-
-All object actions (get, create, update, all) support the use of local credentials.  To specify local credentials, the last argument passed in should be the Zipmark_Client object for those credentials.
-
-#### Global Credentials
+### Instantiating a client
 
 ```php
-$bill = Zipmark_Bill::get("Bill ID");
+$client = new Zipmark_Client("Application Identifier", "Application Secret", ProductionEnabled);
 ```
 
-#### Local Credentials
+Application Identifier and Application Secret should be replaced with the vendor application identifier and secret provided by Zipmark.
+
+ProductionEnabled is a boolean flag that indicates whether traffic for this client is live production traffic.  Omitting this argument will result in all traffic being directed to Zipmark's sandbox environment.  Production mode can also be enabled with the following:
 
 ```php
-$bill = Zipmark_Bill::get("Bill ID", $client);
+$client->setProduction(true);
+```
+
+### Loading all bills
+
+```php
+$bills = $client->bills->get();
 ```
 
 ### Loading a Bill from a known Bill ID
 
 ```php
-$bill = Zipmark_Bill::get("Bill ID");
+$bill = $client->bill->get("Bill ID");
 ```
 
 ### Creating a new Bill
@@ -115,12 +92,12 @@ Create a bill object, set required attributes, send it to Zipmark
 $bill = new Zipmark_Bill();
 $bill->identifier = "abc123";     // Unique Bill Identifier
 $bill->amount_cents = 100;        // Bill amount in cents
-$bill->bill_template_id = "UUID"  // UUID of Bill Template from Zipmark
+$bill->bill_template_id = "UUID"; // UUID of Bill Template from Zipmark
 $bill->memo = "Memo to customer"; // Text memo shown to customer
 $bill->date = "YYYY-MM-DD";       // Date of Bill issuance
 $bill->content = "{}";            // JSON String with Bill content - rendered with template
 
-$bill->create();
+$bill->create($client);
 ```
 
 ### Updating an existing Bill
@@ -128,7 +105,7 @@ $bill->create();
 Get the bill, make a change, send it back to Zipmark
 
 ```php
-$bill = Zipmark_Bill::get("Bill ID");
+$bill = $client->bill->get("Bill ID");
 
 $bill->memo = "Please pay with Zipmark";
 
@@ -140,7 +117,7 @@ $bill->update();
 Retrieve a list of all bills.  The client understands Zipmark's pagination system.  It loads one page of objects at a time and will retrieve more objects as necessary while iterating through the objects.
 
 ```php
-$bills = Zipmark_Bills::get();
+$bills = $client->bills->get();
 ```
 
 Get the number of objects available.

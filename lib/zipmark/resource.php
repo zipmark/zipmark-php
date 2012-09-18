@@ -59,21 +59,30 @@ abstract class Zipmark_Resource extends Zipmark_Base {
   }
 
   /**
+   * Find an object by its ID
+   *
+   * @param  string               $objectId The Object ID
+   *
+   * @return Zipmark_Resource               The Object
+   */
+  public function get($objectId) {
+    return $this->_get($this->pathFor($objectId));
+  }
+
+  protected function path() {
+    if (!empty($this->_href))
+      return $this->getHref();
+    else
+      return $this->pathFor($this->id);
+  }
+
+  /**
    * Generate a JSON representation of the object
    *
    * @return string JSON representation of the object
    */
   public function toJson() {
     return json_encode(array($this->getObjectName() => $this->_values));
-  }
-
-  protected function _save($method, $path) {
-    if (is_null($this->_client))
-      $this->_client = new Zipmark_Client();
-
-    $response = $this->_client->request($method, $path, $this->toJson());
-    Zipmark_Base::_parseJsonToUpdateObject($response->body);
-    $response->checkResponse($this);
   }
 }
 

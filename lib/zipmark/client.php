@@ -1,6 +1,6 @@
 <?php
 
-class Zipmark_Client {
+class Zipmark_Client extends Zipmark_Base {
   public static $appId;
 
   public static $appSecret;
@@ -30,6 +30,16 @@ class Zipmark_Client {
   const PATH_DISBURSEMENTS        = '/disbursements';
   const PATH_VENDOR_RELATIONSHIPS = '/vendor_relationships';
 
+  // Zipmark Object Types
+  private static $zipmarkObjectTypes = array(
+    'approval_rule', 'approval_rules',
+    'bill', 'bills',
+    'callback', 'callbacks',
+    'disbursement', 'disbursements',
+    'vendor',
+    'vendor_relationship', 'vendor_relationships'
+  );
+
   /**
    * Create a new Zipmark_Client
    *
@@ -42,6 +52,12 @@ class Zipmark_Client {
     $this->_appSecret = $appSecret;
     $this->_production = $production;
     $this->_apiUrl = $apiUrl;
+
+    // Objects
+    foreach (self::$zipmarkObjectTypes as $obj) {
+      $className = Zipmark_Base::getClassName($obj);
+      $this->$obj = new $className(null, $this);
+    }
   }
 
   /**

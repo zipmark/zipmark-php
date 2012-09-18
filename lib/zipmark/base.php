@@ -61,13 +61,10 @@ abstract class Zipmark_Base {
    *
    * @return Zipmark_Base         A Zipmark Object of type TBD
    */
-  public static function _get($path, $client = null) {
-    if (is_null($client))
-      $client = new Zipmark_Client();
-
-    $response = $client->request(Zipmark_Client::GET, $path);
+  public function _get($path) {
+    $response = $this->_client->request(Zipmark_Client::GET, $path);
     $response->checkResponse();
-    return Zipmark_Base::_parseJsonToNewObject($response->body, $client);
+    return Zipmark_Base::_parseJsonToNewObject($response->body, $this->_client);
   }
 
   /**
@@ -111,15 +108,38 @@ abstract class Zipmark_Base {
   }
 
   /**
+   * Map and validate JSON object names to PHP class names
+   *
+   * Ex: bill -> Zipmark_Bill
+   *
+   * @param string $objectName The object name from JSON API return
+   *
+   * @return mixed             The PHP Class Name (if valid)
+   *                           null (if invalid)
+   */
+  public static function getClassName($objectName) {
+    $objectClass = "Zipmark_" . self::camelize($objectName);
+
+    if (class_exists($objectClass))
+      return $objectClass;
+    else
+      return null;
+  }
+
+  /**
    * Get the object name from the class name
    *
    * Ex: Zipmark_Bill -> Bill
    *     Zipmark_VendorRelationships -> VendorRelationships
    *
-   * @param boolean $camelized Whether to return camel case or not
+   * @param boolean $camelized   Whether to return camel case or not
+   * @param string  $object_name Class name to convert to object name
    */
-  public function getObjectName($camelized = false) {
-    $name = get_class($this);
+  public function getObjectName($camelized = false, $className = null) {
+    if ($className)
+      $name = $className;
+    else
+      $name = get_class($this);
     $parts = explode('_', $name);
     $resourceName = end($parts);
     if ($camelized) {
@@ -157,25 +177,6 @@ abstract class Zipmark_Base {
       'strtoupper("\\2")',
       $word
     );
-  }
-
-  /**
-   * Map and validate JSON object names to PHP Class Names
-   *
-   * Ex: bill -> Zipmark_Bill
-   *
-   * @param string $objectName The object name from JSON API return
-   *
-   * @return mixed             The PHP Class Name (if valid)
-   *                           null (if invalid)
-   */
-  public static function classMap($objectName) {
-    $objectClass = "Zipmark_" . self::camelize($objectName);
-
-    if (class_exists($objectClass))
-      return $objectClass;
-    else
-      return null;
   }
 
   /**
@@ -222,7 +223,7 @@ abstract class Zipmark_Base {
 
   private static function _createObject($parsedObject) {
     $objName = key($parsedObject);
-    $objClass = self::classMap($objName);
+    $objClass = self::getClassName($objName);
 
     if (!$objClass)
       return new Zipmark_Object();
@@ -245,7 +246,7 @@ abstract class Zipmark_Base {
     switch (gettype($objV)) {
       case 'array':
         foreach ($objV as $k => $v) {
-          $objClass = self::classMap($k);
+          $objClass = self::getClassName($k);
           if ($objClass)
             $obj->$k = self::_createObject(array($k => $v));
           else if ($k == "links")

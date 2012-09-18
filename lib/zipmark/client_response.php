@@ -43,14 +43,14 @@ class Zipmark_ClientResponse {
       case 0:
         throw new Zipmark_ConnectionError('An error occurred while connecting to Zipmark.');
       case 400:
-        $message = (is_null($error) ? 'Bad API Request' : $error);
+        $message = (is_null($error) ? 'Bad API Request' : implode(": ", $error));
         throw new Zipmark_Error($message);
       case 401:
         throw new Zipmark_UnauthorizedError('Your credentials are not authorized to connect to Zipmark.');
       case 403:
         throw new Zipmark_UnauthorizedError('Please use an API key to connect to Zipmark.');
       case 404:
-        $message = (is_null($error) ? 'Object not found' : $error);
+        $message = (is_null($error) ? 'Object not found' : implode(": ", $error));
         throw new Zipmark_NotFoundError($message);
       case 422:
         if (isset($object)) {
@@ -60,7 +60,7 @@ class Zipmark_ClientResponse {
         return;
       case 500:
         $message = (is_null($error) ? 'An error occurred while connecting to Zipmark' :
-                   'An error occurred while connecting to Zipmark: ' . $error);
+                   'An error occurred while connecting to Zipmark: ' . implode(": ", $error));
         throw new Zipmark_ServerError($message);
       case 502:
       case 503:
