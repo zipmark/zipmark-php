@@ -75,7 +75,7 @@ $client->setProduction(true);
 ### Loading a Bill from a known Bill ID
 
 ```php
-$bill = $client->bill->get("Bill ID");
+$bill = $client->bills->get("Bill ID");
 ```
 
 ### Creating a new Bill
@@ -83,15 +83,33 @@ $bill = $client->bill->get("Bill ID");
 Create a bill object, set required attributes, send it to Zipmark
 
 ```php
-$bill = new Zipmark_Bill();
-$bill->identifier = "abc123";     // Unique Bill Identifier
-$bill->amount_cents = 100;        // Bill amount in cents
-$bill->bill_template_id = "UUID"; // UUID of Bill Template from Zipmark
-$bill->memo = "Memo to customer"; // Text memo shown to customer
-$bill->date = "YYYY-MM-DD";       // Date of Bill issuance
-$bill->content = "{}";            // JSON String with Bill content - rendered with template
+$bill_data = array(
+  'identifier'       => 'abc123',           // Unique Bill Identifier
+  'amount_cents'     => 100,                // Bill amount in cents
+  'bill_template_id' => 'UUID',             // UUID of Bill Template from Zipmark
+  'memo'             => 'Memo to customer', // Text memo shown to customer
+  'date'             => 'YYYY-MM-DD',       // Date of Bill issuance
+  'content'          => '{}',               // JSON String with Bill content - rendered with template
+);
 
-$bill->create($client);
+$bill = $client->bills->create($bill_data);
+```
+
+As an alternative, it is possible to build an object first and then save it afterwards
+
+```php
+$bill_data = array(
+  'identifier'       => 'abc123',           // Unique Bill Identifier
+  'amount_cents'     => 100,                // Bill amount in cents
+  'bill_template_id' => 'UUID',             // UUID of Bill Template from Zipmark
+  'memo'             => 'Memo to customer', // Text memo shown to customer
+  'date'             => 'YYYY-MM-DD',       // Date of Bill issuance
+  'content'          => '{}',               // JSON String with Bill content - rendered with template
+);
+
+$bill = $client->bills->build($bill_data);
+
+$bill->save();
 ```
 
 ### Updating an existing Bill
@@ -99,11 +117,11 @@ $bill->create($client);
 Get the bill, make a change, send it back to Zipmark
 
 ```php
-$bill = $client->bill->get("Bill ID");
+$bill = $client->bills->get("Bill ID");
 
 $bill->memo = "Please pay with Zipmark";
 
-$bill->update();
+$bill->save();
 ```
 
 ### Retrieving and using a list of all Bills
@@ -111,7 +129,7 @@ $bill->update();
 Retrieve a list of all bills.  The client understands Zipmark's pagination system.  It loads one page of objects at a time and will retrieve more objects as necessary while iterating through the objects.
 
 ```php
-$bills = $client->bills->get();
+$bills = $client->bills->get_all();
 ```
 
 Get the number of objects available.

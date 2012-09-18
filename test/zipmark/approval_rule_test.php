@@ -9,7 +9,7 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $approval_rule = $client->approval_rule->get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
+    $approval_rule = $client->approval_rules->get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
 
     $this->assertIsA($approval_rule, 'Zipmark_ApprovalRule');
     $this->assertEqual($approval_rule->getHref(), 'http://example.org/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
@@ -27,7 +27,7 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
     $client = new Zipmark_Client(null, null, false, null, $http);
     
     try {
-      $approval_rule = $client->approval_rule->get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
+      $approval_rule = $client->approval_rules->get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
       $this->fail("Expected Zipmark_NotFoundError");
     }
     catch (Zipmark_NotFoundError $e) {
@@ -35,6 +35,18 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
     }
 
     $this->assertEqual($response->statusCode, 404);
+  }
+
+  function testApprovalRuleBuildFail() {
+    $client = new Zipmark_Client();
+
+    try {
+      $approval_rule = $client->approval_rules->build();
+      $this->fail("Expected Zipmark_ReadOnlyObjectTypeError");
+    }
+    catch (Zipmark_ReadOnlyObjectTypeError $e) {
+      $this->pass("Received Zipmark_ReadOnlyObjectTypeError");
+    }
   }
 
   function testApprovalRulePath() {

@@ -9,7 +9,7 @@ class ZipmarkDisbursementTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $disbursement = $client->disbursement->get('b1a42f3e-bf21-4651-8ca4-d716593277db', $client);
+    $disbursement = $client->disbursements->get('b1a42f3e-bf21-4651-8ca4-d716593277db');
 
     $this->assertIsA($disbursement, 'Zipmark_Disbursement');
     $this->assertEqual($disbursement->getHref(), 'http://example.org/disbursements/b1a42f3e-bf21-4651-8ca4-d716593277db');
@@ -22,17 +22,20 @@ class ZipmarkDisbursementTest extends UnitTestCase {
   function testDisbursementCreate() {
     $response = loadFixture('disbursements/create.http');
 
-    $disbursement = new Zipmark_Disbursement();
-    $disbursement->user_email = 'test@example.com';
-    $disbursement->customer_id = 'abc123';
-    $disbursement->amount_cents = 5000;
+    $disbursement_data = array(
+      'user_email'   => 'test@example.com',
+      'customer_id'  => 'abc123',
+      'amount_cents' => 5000,
+    );
+
+    $disbursement_json = json_encode(array("disbursement" => $disbursement_data));
     
     $http = new MockZipmark_Http();
-    $http->returns('POST', $response, array('/disbursements', $disbursement->toJson()));
+    $http->returns('POST', $response, array('/disbursements', $disbursement_json));
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $disbursement->create($client);
+    $disbursement = $client->disbursements->create($disbursement_data);
 
     $this->assertIsA($disbursement, 'Zipmark_Disbursement');
     $this->assertEqual($disbursement->id, 'eafe7f6e-22b3-453e-9637-a482e2a144da');
@@ -44,17 +47,20 @@ class ZipmarkDisbursementTest extends UnitTestCase {
   function testDisbursementCreateFail() {
     $response = loadFixture('disbursements/create_fail.http');
 
-    $disbursement = new Zipmark_Disbursement();
-    $disbursement->user_email = 'test@example.com';
-    $disbursement->customer_id = 'abc123';
+    $disbursement_data = array(
+      'user_email'   => 'test@example.com',
+      'customer_id'  => 'abc123',
+    );
+
+    $disbursement_json = json_encode(array("disbursement" => $disbursement_data));
     
     $http = new MockZipmark_Http();
-    $http->returns('POST', $response, array('/disbursements', $disbursement->toJson()));
+    $http->returns('POST', $response, array('/disbursements', $disbursement_json));
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
     try {
-      $disbursement->create($client);
+      $client->disbursements->create($disbursement_data);
       $this->fail("Expected Zipmark_ValidationError");
     }
     catch (Zipmark_ValidationError $e) {

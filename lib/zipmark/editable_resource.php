@@ -2,27 +2,17 @@
 
 abstract class Zipmark_EditableResource extends Zipmark_Resource {
   /**
-   * Create a new Zipmark_Object at Zipmark
+   * Save a Zipmark_EditableResource to the Zipmark Service
    *
-   * @param Zipmark_Client $client Client object to connect to service
+   * @return Zipmark_EditableResource The Zipmark Object
    */
-  public function create($client = null) {
-    if (!is_null($client))
-      $this->setClient($client);
+  public function save() {
+    if ($this->id)
+      $this->_save(Zipmark_Client::PUT, $this->path());
+    else
+      $this->_save(Zipmark_Client::POST, $this->pathFor(''));
 
-    $this->_save(Zipmark_Client::POST, $this->pathFor(''));
-  }
-
-  /**
-   * Update an existing Zipmark_Object at Zipmark
-   *
-   * @param Zipmark_Client $client Client object to connect to service
-   */
-  public function update($client = null) {
-    if (!is_null($client))
-      $this->setClient($client);
-
-    $this->_save(Zipmark_Client::PUT, $this->path());
+    return $this;
   }
 
   protected function _save($method, $path) {

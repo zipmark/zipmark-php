@@ -9,7 +9,7 @@ class ZipmarkCallbackTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $callback = $client->callback->get('85172b58-f3e5-46d9-ba61-3c0cf769caa0', $client);
+    $callback = $client->callbacks->get('85172b58-f3e5-46d9-ba61-3c0cf769caa0');
 
     $this->assertIsA($callback, 'Zipmark_Callback');
     $this->assertEqual($callback->getHref(), 'http://example.org/callbacks/85172b58-f3e5-46d9-ba61-3c0cf769caa0');
@@ -23,16 +23,19 @@ class ZipmarkCallbackTest extends UnitTestCase {
   function testCallbackCreate() {
     $response = loadFixture('callbacks/create.http');
 
-    $callback = new Zipmark_Callback();
-    $callback->event = 'bill.update';
-    $callback->url = 'https://example.com/callbacks';
+    $callback_data = array(
+      'event' => 'bill.update',
+      'url'   => 'https://example.com/callbacks',
+    );
+
+    $callback_json = json_encode(array("callback" => $callback_data));
 
     $http = new MockZipmark_Http();
-    $http->returns('POST', $response, array('/callbacks', $callback->toJson()));
+    $http->returns('POST', $response, array('/callbacks', $callback_json));
 
     $client = new Zipmark_Client(null, null, false, null, $http);
-    
-    $callback->create($client);
+
+    $callback = $client->callbacks->create($callback_data);
 
     $this->assertIsA($callback, 'Zipmark_Callback');
     $this->assertEqual($callback->api_version, 'v2');
@@ -44,17 +47,20 @@ class ZipmarkCallbackTest extends UnitTestCase {
   function testCallbackCreateFail() {
     $response = loadFixture('callbacks/create_fail.http');
 
-    $callback = new Zipmark_Callback();
-    $callback->event = 'bill.create';
-    $callback->url = 'http://example.com/callbacks';
+    $callback_data = array(
+      'event' => 'bill.create',
+      'url'   => 'https://example.com/callbacks',
+    );
+
+    $callback_json = json_encode(array("callback" => $callback_data));
     
     $http = new MockZipmark_Http();
-    $http->returns('POST', $response, array('/callbacks', $callback->toJson()));
+    $http->returns('POST', $response, array('/callbacks', $callback_json));
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
     try {
-      $callback->create($client);
+      $client->callbacks->create($callback_data);
       $this->fail("Expected Zipmark_ValidationError");
     }
     catch (Zipmark_ValidationError $e) {

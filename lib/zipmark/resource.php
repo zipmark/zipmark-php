@@ -51,7 +51,7 @@ abstract class Zipmark_Resource extends Zipmark_Base {
    *
    * @return object     The value (can be anything: string, array, object, etc)
    */
-  public function &__get($k) {
+  public function __get($k) {
     if (isset($this->_values[$k]))
       return $this->_values[$k];
     else

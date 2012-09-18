@@ -156,6 +156,38 @@ abstract class Zipmark_Base {
     }
   }
 
+  /**
+   * Build a new Zipmark_EditableResource
+   *
+   * @param array $values Associative array of object attributes
+   */
+  public function build($values = array()) {
+    if (!$this instanceof Zipmark_Collection)
+      return null;
+
+    $objName = $this->getObjectName();
+    $classType = Zipmark_Base::getClassName(rtrim($objName, 's'));
+    $obj = new $classType(null, $this->_client);
+
+    if (!$obj instanceof Zipmark_EditableResource)
+      throw new Zipmark_ReadOnlyObjectTypeError("Cannot build");
+
+    foreach ($values as $k => $v) {
+      $obj->$k = $v;
+    }
+    return $obj;
+  }
+
+  /**
+   * Create a new Zipmark_EditableResource and save it to the Zipmark Service
+   *
+   * @param array $values Associative array of object attributes
+   */
+  public function create($values = array()) {
+    $obj = $this->build($values);
+    return $obj->save();
+  }
+
   protected static function _parseJsonToNewObject($json, $client = null) {
     $parsedObject = json_decode($json, true);
     if (is_null($parsedObject)) return null;

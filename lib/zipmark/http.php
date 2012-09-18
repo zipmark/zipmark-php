@@ -62,13 +62,16 @@ class Zipmark_Http {
 
     switch ($name) {
       case 'get':
+      case 'GET':
         $opts[CURLOPT_HTTPGET] = TRUE;
         break;
       case 'post':
-        $opts[CURLOPT_POST] = TRUE;
+      case 'POST':
+        $opts[CURLOPT_CUSTOMREQUEST] = 'POST';
         $opts[CURLOPT_POSTFIELDS] = $req_body;
         break;
       case 'put':
+      case 'PUT':
         $opts[CURLOPT_CUSTOMREQUEST] = 'PUT';
         $opts[CURLOPT_POSTFIELDS] = $req_body;
         break;

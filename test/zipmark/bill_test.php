@@ -9,7 +9,7 @@ class ZipmarkBillTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $bill = $client->bill->get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
+    $bill = $client->bills->get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
 
     $this->assertIsA($bill, 'Zipmark_Bill');
     $this->assertEqual($bill->getHref(), 'http://example.org/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
@@ -38,7 +38,7 @@ class ZipmarkBillTest extends UnitTestCase {
     $client = new Zipmark_Client(null, null, false, null, $http);
 
     try {
-      $bill = $client->bill->get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1c');
+      $bill = $client->bills->get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1c');
       $this->fail("Expected Zipmark_NotFoundError");
     }
     catch (Zipmark_NotFoundError $e) {
@@ -48,23 +48,50 @@ class ZipmarkBillTest extends UnitTestCase {
     $this->assertEqual($response->statusCode, 404);
   }
 
+  function testBillBuild() {
+    $bill_data = array(
+      'identifier'       => 'testbill8',
+      'amount_cents'     => 12345,
+      'bill_template_id' => '7eadd7be-60eb-4054-a172-107d394585e2',
+      'memo'             => 'Test Bill #8',
+      'date'             => '2012-09-10',
+      'content'          => '{"content":"foo"}',
+    );
+
+    $bill_json = json_encode(array("bill" => $bill_data));
+
+    $http = new MockZipmark_Http();
+    $client = new Zipmark_Client(null, null, false, null, $http);
+
+    $bill = $client->bills->build($bill_data);
+
+    $this->assertIsA($bill, 'Zipmark_Bill');
+    $this->assertEqual($bill->amount_cents, 12345);
+    $this->assertEqual($bill->memo, 'Test Bill #8');
+    $this->assertEqual($bill->identifier, 'testbill8');
+    $this->assertEqual($bill->toJson(), $bill_json);        
+  }
+
   function testBillCreate() {
     $response = loadFixture('bills/create.http');
 
-    $bill = new Zipmark_Bill();
-    $bill->identifier = 'testbill8';
-    $bill->amount_cents = 12345;
-    $bill->bill_template_id = '7eadd7be-60eb-4054-a172-107d394585e2';
-    $bill->memo = 'Test Bill #8';
-    $bill->date = '2012-09-10';
-    $bill->content = '{"content":"foo"}';
+    $bill_data = array(
+      'identifier'       => 'testbill8',
+      'amount_cents'     => 12345,
+      'bill_template_id' => '7eadd7be-60eb-4054-a172-107d394585e2',
+      'memo'             => 'Test Bill #8',
+      'date'             => '2012-09-10',
+      'content'          => '{"content":"foo"}',
+    );
+
+    $bill_json = json_encode(array("bill" => $bill_data));
 
     $http = new MockZipmark_Http();
-    $http->returns('POST', $response, array('/bills', $bill->toJson()));
+    $http->returns('POST', $response, array('/bills', $bill_json));
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $bill->create($client);
+    $bill = $client->bills->create($bill_data);
 
     $this->assertIsA($bill, 'Zipmark_Bill');
     $this->assertEqual($bill->amount_cents, 12345);
@@ -81,17 +108,20 @@ class ZipmarkBillTest extends UnitTestCase {
   function testBillCreateFail() {
     $response = loadFixture('bills/create_fail.http');
 
-    $bill = new Zipmark_Bill();
-    $bill->amount_cents = 12345;
-    $bill->memo = 'Test Bill Create Fail';
+    $bill_data = array(
+      'amount_cents' => 12345,
+      'memo'         => 'Test Bill Create Fail'
+    );
     
+    $bill_json = json_encode(array("bill" => $bill_data));
+
     $http = new MockZipmark_Http();
-    $http->returns('POST', $response, array('/bills', $bill->toJson()));
+    $http->returns('POST', $response, array('/bills', $bill_json));
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
     try {
-      $bill->create($client);
+      $client->bills->create($bill_data);
       $this->fail("Expected Zipmark_ValidationError");
     }
     catch (Zipmark_ValidationError $e) {

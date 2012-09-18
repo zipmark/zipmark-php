@@ -9,7 +9,7 @@ class Zipmark_CollectionTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $bills = $client->bills->get();
+    $bills = $client->bills->get_all();
 
     $this->assertEqual($bills->key(), 0);
     $this->assertEqual($bills->count(), 8);
@@ -26,7 +26,7 @@ class Zipmark_CollectionTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $bills = $client->bills->get();
+    $bills = $client->bills->get_all();
 
     $currentBill = $bills->current();
 
@@ -58,7 +58,7 @@ class Zipmark_CollectionTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $bills = $client->bills->get();
+    $bills = $client->bills->get_all();
 
     $this->assertEqual($bills->page(), 1);
     $this->assertEqual($bills->perPage(), 3);
@@ -85,7 +85,7 @@ class Zipmark_CollectionTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $bills = $client->bills->get();
+    $bills = $client->bills->get_all();
 
     $this->assertEqual($bills->key(), 0);
     $this->assertEqual($bills->page(), 1);

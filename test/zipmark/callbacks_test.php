@@ -9,7 +9,7 @@ class Zipmark_CallbacksTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, false, null, $http);
 
-    $callbacks = $client->callbacks->get();
+    $callbacks = $client->callbacks->get_all();
 
     $this->assertIsA($callbacks, 'Zipmark_Callbacks');
     $this->assertEqual($callbacks->getHref(), '/callbacks');

@@ -41,4 +41,6 @@ class Zipmark_ValidationError extends Zipmark_Error {
   }
 }
 
+class Zipmark_ReadOnlyObjectTypeError extends Zipmark_Error {}
+
 ?>

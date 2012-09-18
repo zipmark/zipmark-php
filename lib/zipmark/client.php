@@ -26,13 +26,8 @@ class Zipmark_Client extends Zipmark_Base {
   const PATH_VENDOR_RELATIONSHIPS = '/vendor_relationships';
 
   // Zipmark Object Types
-  private static $zipmarkObjectTypes = array(
-    'approval_rule', 'approval_rules',
-    'bill', 'bills',
-    'callback', 'callbacks',
-    'disbursement', 'disbursements',
-    'vendor',
-    'vendor_relationship', 'vendor_relationships'
+  private static $zipmarkCollectionTypes = array(
+    'approval_rules', 'bills', 'callbacks', 'disbursements', 'vendor_relationships',
   );
 
   /**
@@ -66,7 +61,7 @@ class Zipmark_Client extends Zipmark_Base {
     $this->_http = $http;
 
     // Objects
-    foreach (self::$zipmarkObjectTypes as $obj) {
+    foreach (self::$zipmarkCollectionTypes as $obj) {
       $className = Zipmark_Base::getClassName($obj);
       $this->$obj = new $className(null, $this);
     }

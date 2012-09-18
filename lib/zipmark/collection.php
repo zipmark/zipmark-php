@@ -22,10 +22,24 @@ abstract class Zipmark_Collection extends Zipmark_Base implements Iterator {
    *
    * @return Zipmark_Collection         A list of objects
    */
-  public function get($params = null) {
+  public function get_all($params = null) {
     $this->setHref($this->pathFor());
     $this->_loadFrom($this->pathFor(), $params);
     return $this;
+  }
+
+  /**
+   * Find a specific object
+   *
+   * @param  string $objectId The Object Identifier
+   *
+   * @return Zipmark_Resource The Object
+   */
+  public function get($objectId) {
+    $objName = $this->getObjectName();
+    $classType = Zipmark_Base::getClassName(rtrim($objName, 's'));
+    $obj = new $classType(null, $this->_client);
+    return $obj->get($objectId);
   }
 
   /**
