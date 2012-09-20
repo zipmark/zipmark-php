@@ -139,6 +139,20 @@ class Zipmark_Client extends Zipmark_Base
     $this->_http->setApiUrl($this->apiUrl());
   }
 
+  /**
+   * Return an array of available resources
+   *
+   * @return array Available resources from Zipmark service
+   */
+  public function allResources()
+  {
+    if (!count($this->_collections)) {
+      $this->_loadRoot();
+    }
+
+    return array_keys($this->_collections);
+  }
+
   private function _loadRoot()
   {
     $response = $this->request('GET', '/');
