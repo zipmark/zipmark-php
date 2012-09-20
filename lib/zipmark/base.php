@@ -4,8 +4,7 @@ abstract class Zipmark_Base {
   private $_name;
   private $_href;
   private $_client;
-  private $_links;
-
+  
   /**
    * Create a new Zipmark_Base
    *
@@ -17,7 +16,6 @@ abstract class Zipmark_Base {
     $this->_name = $name;
     $this->_href = $href;
     $this->_client = $client;
-    $this->_links = array();
   }
 
   /**
@@ -54,24 +52,6 @@ abstract class Zipmark_Base {
    */
   public function setClient($client) {
     $this->_client = $client;
-  }
-
-  /**
-   * Provide the object's links
-   *
-   * @return array The object's links
-   */
-  public function getLinks() {
-    return $this->_links;
-  }
-
-  /**
-   * Set the object's links
-   *
-   * @param array $links The object's links
-   */
-  public function setLinks($links) {
-    $this->_links = $links;
   }
 
   /**

@@ -9,11 +9,12 @@
  */
 class Zipmark_Collection extends Zipmark_Base implements Iterator {
   private $_position = 0; // Position within the current page
-  protected $_page;       // Current page number
-  protected $_totalPages; // Total number of pages
-  protected $_perPage;    // Resources per page
-  protected $_count;      // Total number of resources
-  protected $_objects;    // Current page of resources
+  private $_links;        // The collection's links
+  private $_page;         // Current page number
+  private $_totalPages;   // Total number of pages
+  private $_perPage;      // Resources per page
+  private $_count;        // Total number of resources
+  private $_objects;      // Current page of resources
 
   /**
    * Find all objects
@@ -57,9 +58,8 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
    * Rewind to the beginning
    */
   public function rewind() {
-    $links = $this->getLinks();
-    if (isset($links['first'])) {
-      $this->_loadFrom($links['first']);
+    if (isset($this->_links['first'])) {
+      $this->_loadFrom($this->_links['first']);
     }
     $this->_position = 0;
   }
@@ -134,9 +134,8 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
     }
     elseif ($this->_position >= ($this->_page * $this->_perPage)) {
       // Advancing to the next page
-      $links = $this->getLinks();
-      if (isset($links['next']))
-        $this->_loadFrom($links['next']);
+      if (isset($this->_links['next']))
+        $this->_loadFrom($this->_links['next']);
     }
 
     // Calculate "effective position" within the current page
@@ -161,9 +160,8 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
     }
     elseif ($this->_position < (($this->_page - 1) * $this->_perPage)) {
       // Reversing to the previous page
-      $links = $this->getLinks();
-      if (isset($links['prev']))
-        $this->_loadFrom($links['prev']);
+      if (isset($this->_links['prev']))
+        $this->_loadFrom($this->_links['prev']);
     }
 
     // Calculate "effective position" within the current page
@@ -218,16 +216,15 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
    * links if the they're present.
    */
   private function _loadLinks($response) {
-    $links = array();
+    $this->_links = array();
 
     $parsedBody = json_decode($response->body, true);
     $link_ary = $parsedBody["links"];
     foreach ($link_ary as $link) {
       $rel = $link["rel"];
       $href = $link["href"];
-      $links[$rel] = $href;
+      $this->_links[$rel] = $href;
     }
-    $this->setLinks($links);
   }
 
   /**
