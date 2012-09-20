@@ -1,12 +1,13 @@
 <?php
 
-class Zipmark_Client extends Zipmark_Base {
+class Zipmark_Client extends Zipmark_Base
+{
   public static $appId;
 
   public static $appSecret;
 
-  private static $sandboxApiUrl = 'https://sandbox.zipmark.com';
-  private static $productionApiUrl = 'https://api.zipmark.com';
+  private static $_sandboxApiUrl = 'https://sandbox.zipmark.com';
+  private static $_productionApiUrl = 'https://api.zipmark.com';
 
   private $_http;
   private $_appId;
@@ -14,11 +15,7 @@ class Zipmark_Client extends Zipmark_Base {
   private $_production = false;
   private $_apiUrl;
   private $_collections = array();
-
-  const GET  = 'GET';
-  const POST = 'POST';
-  const PUT  = 'PUT';
-  
+ 
   /**
    * Create a new Zipmark_Client
    *
@@ -27,7 +24,8 @@ class Zipmark_Client extends Zipmark_Base {
    * @param string       $apiUrl    URL of Zipmark API - Defaults to production
    * @param Zipmark_Http $http A Zipmark_Http object to use - makes testing possible
    */
-  function __construct($appId = null, $appSecret = null, $apiUrl = null, Zipmark_Http $http = null) {
+  function __construct($appId = null, $appSecret = null, $apiUrl = null, Zipmark_Http $http = null)
+  {
     $this->_appId = $appId;
     $this->_appSecret = $appSecret;
     $this->_apiUrl = $apiUrl;
@@ -48,7 +46,7 @@ class Zipmark_Client extends Zipmark_Base {
       );
     }
     $this->_http = $http;
-}
+  }
 
   /**
    * Magic to retrieve collection types from the Zipmark service and make them usable
@@ -57,13 +55,14 @@ class Zipmark_Client extends Zipmark_Base {
    *
    * @return Zipmark_Collection    The requested collection, if it exists, or null
    */
-  public function __get($k) {
+  public function __get($k) 
+  {
     // If the requested collection is known, return a new collection
     if (array_key_exists($k, $this->_collections)) {
       return new Zipmark_Collection($k, $this->_collections[$k], $this);
     } else {
       // Otherwise, load the collections and check again
-      $this->loadRoot();
+      $this->_loadRoot();
       if (array_key_exists($k, $this->_collections)) {
         return new Zipmark_Collection($k, $this->_collections[$k], $this);
       } else {
@@ -82,7 +81,8 @@ class Zipmark_Client extends Zipmark_Base {
    *
    * @return Zipmark_ClientResponse         A Zipmark Response object
    */  
-  public function request($method, $path, $data = null) {
+  public function request($method, $path, $data = null)
+  {
     $response = $this->_http->$method($path, $data);
     $response->checkResponse();
     return $response;
@@ -93,8 +93,11 @@ class Zipmark_Client extends Zipmark_Base {
    *
    * @return string Application Identifier
    */
-  public function appId() {
-    return (empty($this->_appId) ? Zipmark_Client::$appId : $this->_appId);
+  public function appId()
+  {
+    return empty($this->_appId)
+          ? Zipmark_Client::$appId
+          : $this->_appId;
   }
 
   /**
@@ -102,8 +105,11 @@ class Zipmark_Client extends Zipmark_Base {
    *
    * @return string Application Secret
    */
-  public function appSecret() {
-    return (empty($this->_appSecret) ? Zipmark_Client::$appSecret : $this->_appSecret);
+  public function appSecret()
+  {
+    return empty($this->_appSecret)
+          ? Zipmark_Client::$appSecret
+          : $this->_appSecret;
   }
 
   /**
@@ -111,11 +117,15 @@ class Zipmark_Client extends Zipmark_Base {
    *
    * @return string API URL
    */
-  public function apiUrl() {
-    if (empty($this->_apiUrl))
-      return ($this->_production ? Zipmark_Client::$productionApiUrl : Zipmark_Client::$sandboxApiUrl);
-    else
+  public function apiUrl()
+  {
+    if (empty($this->_apiUrl)) {
+      return $this->_production
+            ? Zipmark_Client::$_productionApiUrl
+            : Zipmark_Client::$_sandboxApiUrl;
+    } else {
       return $this->_apiUrl;
+    }
   }
 
   /**
@@ -123,16 +133,20 @@ class Zipmark_Client extends Zipmark_Base {
    *
    * @param boolean $enabled True/false to enable/disable production mode
    */
-  public function setProduction($enabled) {
+  public function setProduction($enabled)
+  {
     $this->_production = $enabled;
     $this->_http->setApiUrl($this->apiUrl());
   }
 
-  private function loadRoot() {
-    $response = $this->request(Zipmark_Client::GET, '/');
+  private function _loadRoot()
+  {
+    $response = $this->request('GET', '/');
     
     $parsedObject = json_decode($response->body, true);
-    if (is_null($parsedObject)) return null;
+    if (is_null($parsedObject)) {
+      return null;
+    }
 
     if (array_key_exists('vendor_root', $parsedObject)) {
       if (array_key_exists('links', $parsedObject['vendor_root'])) {

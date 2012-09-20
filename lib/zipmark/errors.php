@@ -16,11 +16,13 @@ class Zipmark_RequestError extends Zipmark_Error {}
 
 class Zipmark_ServerError extends Zipmark_Error {}
 
-class Zipmark_ValidationError extends Zipmark_Error {
+class Zipmark_ValidationError extends Zipmark_Error
+{
   var $object;
   var $errors;
   
-  function __construct($object, $errors) {
+  function __construct($object, $errors)
+  {
     $this->object = $object;
 
     $message = $object->getObjectName();

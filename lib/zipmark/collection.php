@@ -7,7 +7,8 @@
  * Iterating past the last item in either direction returns a 
  * null and leaves the pointer unchanged.
  */
-class Zipmark_Collection extends Zipmark_Base implements Iterator {
+class Zipmark_Collection extends Zipmark_Base implements Iterator
+{
   private $_position = 0; // Position within the current page
   private $_links;        // The collection's links
   private $_page;         // Current page number
@@ -19,11 +20,12 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
   /**
    * Find all objects
    *
-   * @param  string             $params Parameters for find
+   * @param  string             $params Optional parameters for find
    *
    * @return Zipmark_Collection         A list of objects
    */
-  public function get_all($params = null) {
+  public function getAll($params = null)
+  {
     $this->_loadFrom($this->getHref(), $params);
     return $this;
   }
@@ -35,7 +37,8 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
    *
    * @return Zipmark_Resource The Object
    */
-  public function get($objectId) {
+  public function get($objectId)
+  {
     $objName = $this->getObjectName();
     $obj = new Zipmark_Resource($objName, $this->getHref(), $this->getClient());
     return $obj->get($objectId);
@@ -46,7 +49,8 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
    *
    * @return integer number of records in the list
    */
-  public function count() {
+  public function count()
+  {
     if (empty($this->_count)) {
       $response = $this->getClient()->request(Zipmark_Client::GET, $this->pathFor());
       $this->_loadPageMetadata($response);
@@ -57,7 +61,8 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
   /**
    * Rewind to the beginning
    */
-  public function rewind() {
+  public function rewind()
+  {
     if (isset($this->_links['first'])) {
       $this->_loadFrom($this->_links['first']);
     }
@@ -87,7 +92,8 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
    *
    * @return integer Current position
    */
-  public function key() {
+  public function key()
+  {
     return $this->_position;
   }
 
@@ -96,7 +102,8 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
    *
    * @return integer Current page
    */
-  public function page() {
+  public function page()
+  {
     return $this->_page;
   }
 
@@ -105,7 +112,8 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
    *
    * @return integer Number of pages
    */
-  public function numPages() {
+  public function numPages()
+  {
     return $this->_totalPages;
   }
 
@@ -114,14 +122,18 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
    *
    * @return integer Number of objects per page
    */
-  public function perPage() {
+  public function perPage()
+  {
     return $this->_perPage;
   }
 
   /**
    * Increments the position to the next element
+   *
+   * @return Zipmark_Resource The next element in the collection
    */
-  public function next() {
+  public function next()
+  {
     if (empty($this->_count)) {
       return null;
     }
@@ -146,8 +158,11 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
 
   /**
    * Decrements the position to the previous element
+   *
+   * @return Zipmark_Resource The previous element in the collection
    */
-  public function prev() {
+  public function prev()
+  {
     if (empty($this->_count)) {
       return null;
     }
@@ -173,14 +188,19 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
   /**
    * @return boolean True if the current position is valid.
    */
-  public function valid() {
+  public function valid()
+  {
     return ($this->_position >= 0 && $this->_position < $this->_count);
   }
 
   /**
    * Load a page of results into this collection.
+   *
+   * @param string $path   HTTP path from which to load the object
+   * @param array  $params Optional parameters to add to the query
    */
-  public function _loadFrom($path, $params = null) {
+  private function _loadFrom($path, $params = null)
+  {
     if (!is_null($params) && is_array($params)) {
       $vals = array();
       foreach ($params as $k => $v) {
@@ -189,7 +209,7 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
       $path .= '?' . implode($vals, '&');
     }
 
-    $response = $this->getClient()->request(Zipmark_Client::GET, $path);
+    $response = $this->getClient()->request('GET', $path);
 
     $this->_loadPageMetadata($response);
     $this->_loadLinks($response);
@@ -215,15 +235,14 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
    * the next, previous, first and last pages. This parses the links section into an array of 
    * links if the they're present.
    */
-  private function _loadLinks($response) {
+  private function _loadLinks($response)
+  {
     $this->_links = array();
 
     $parsedBody = json_decode($response->body, true);
     $link_ary = $parsedBody["links"];
     foreach ($link_ary as $link) {
-      $rel = $link["rel"];
-      $href = $link["href"];
-      $this->_links[$rel] = $href;
+      $this->_links[$link["rel"]] = $link["href"];
     }
   }
 
@@ -247,13 +266,14 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator {
         $newObj->_count = Zipmark_Base::_numRecords($object);
       }
 
-      self::_buildObject($objectName, $object, $newObj);
+      self::buildObject($objectName, $object, $newObj);
 
       $this->_objects[] = $newObj;
     }
   }
 
-  private function _findObjectHref($object) {
+  private function _findObjectHref($object)
+  {
     $links = $object["links"];
     if (!is_null($links)) {
       foreach ($links as $link) {

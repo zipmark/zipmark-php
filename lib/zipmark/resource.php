@@ -1,7 +1,8 @@
 <?php
 
-class Zipmark_Resource extends Zipmark_Base {
-  protected $_values;
+class Zipmark_Resource extends Zipmark_Base
+{
+  private $_values;
 
   /**
    * Create a new Zipmark_Resource
@@ -9,7 +10,8 @@ class Zipmark_Resource extends Zipmark_Base {
    * @param string         $href   URL linking to the object
    * @param Zipmark_Client $client The object's client
    */
-  public function __construct($name, $href, $client = null) {
+  public function __construct($name, $href, $client = null)
+  {
     parent::__construct($name, $href, $client);
     $this->_values = array();
   }
@@ -20,7 +22,8 @@ class Zipmark_Resource extends Zipmark_Base {
    * @param string $k The key
    * @param object $v The value (can be anything: string, array, object, etc)
    */
-  public function __set($k, $v) {
+  public function __set($k, $v)
+  {
     $this->_values[$k] = $v;
   }
 
@@ -31,7 +34,8 @@ class Zipmark_Resource extends Zipmark_Base {
    *
    * @return boolean     Whether the specified key has a corresponding value or is null
    */
-  public function __isset($k) {
+  public function __isset($k)
+  {
     return isset($this->_values[$k]);
   }
 
@@ -40,7 +44,8 @@ class Zipmark_Resource extends Zipmark_Base {
    *
    * @param string $k The key
    */
-  public function __unset($k) {
+  public function __unset($k)
+  {
     unset($this->_values[$k]);
   }
 
@@ -51,11 +56,13 @@ class Zipmark_Resource extends Zipmark_Base {
    *
    * @return object     The value (can be anything: string, array, object, etc)
    */
-  public function __get($k) {
-    if (isset($this->_values[$k]))
+  public function __get($k)
+  {
+    if (isset($this->_values[$k])) {
       return $this->_values[$k];
-    else
+    } else {
       return null;
+    }
   }
 
   /**
@@ -65,8 +72,10 @@ class Zipmark_Resource extends Zipmark_Base {
    *
    * @return Zipmark_Resource               The Object
    */
-  public function get($objectId) {
-    return $this->_get($this->pathFor($objectId));
+  public function get($objectId)
+  {
+    $response = $this->getClient()->request('GET', $this->pathFor($objectId));
+    return Zipmark_Base::parseJsonToNewObject($response->body, $this->_client);
   }
 
   /**
@@ -74,7 +83,8 @@ class Zipmark_Resource extends Zipmark_Base {
    *
    * @return string JSON representation of the object
    */
-  public function toJson() {
+  public function toJson()
+  {
     return json_encode(array($this->getObjectName() => $this->_values));
   }
 
@@ -83,19 +93,17 @@ class Zipmark_Resource extends Zipmark_Base {
    *
    * @return Zipmark_Resource The Zipmark Object
    */
-  public function save() {
-    if ($this->id)
-      $this->_save(Zipmark_Client::PUT, $this->pathFor($this->id));
-    else
-      $this->_save(Zipmark_Client::POST, $this->pathFor());
+  public function save()
+  {
+    if ($this->id) {
+      $response = $this->getClient()->request('PUT', $this->pathFor($this->id), $this->toJson());
+    } else {
+      $response = $this->getClient()->request('POST', $this->pathFor(), $this->toJson());
+    }
+    Zipmark_Base::parseJsonToUpdateObject($response->body);
+    $response->checkResponse($this);
 
     return $this;
-  }
-
-  protected function _save($method, $path) {
-    $response = $this->getClient()->request($method, $path, $this->toJson());
-    Zipmark_Base::_parseJsonToUpdateObject($response->body);
-    $response->checkResponse($this);
   }
 }
 

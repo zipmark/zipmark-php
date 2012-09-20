@@ -44,8 +44,7 @@ class ZipmarkBillTest extends UnitTestCase {
     try {
       $bill = $client->bills->get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1c');
       $this->fail("Expected Zipmark_NotFoundError");
-    }
-    catch (Zipmark_NotFoundError $e) {
+    } catch (Zipmark_NotFoundError $e) {
       $this->pass("Received Zipmark_NotFoundError");
     }
 
@@ -134,8 +133,7 @@ class ZipmarkBillTest extends UnitTestCase {
     try {
       $client->bills->create($bill_data);
       $this->fail("Expected Zipmark_ValidationError");
-    }
-    catch (Zipmark_ValidationError $e) {
+    } catch (Zipmark_ValidationError $e) {
       $this->assertEqual($e->getMessage(), "bill - identifier: can't be blank, bill_template_id: can't be blank, bill: is not open");
       $this->pass("Received Zipmark_ValidationError");
     }

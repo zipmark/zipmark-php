@@ -33,8 +33,7 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
     try {
       $approval_rule = $client->approval_rules->get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
       $this->fail("Expected Zipmark_NotFoundError");
-    }
-    catch (Zipmark_NotFoundError $e) {
+    } catch (Zipmark_NotFoundError $e) {
       $this->pass("Received Zipmark_NotFoundError");
     }
 

@@ -11,7 +11,7 @@ class Zipmark_DisbursementsTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, null, $http);
 
-    $disbursements = $client->disbursements->get_all();
+    $disbursements = $client->disbursements->getAll();
 
     $this->assertIsA($disbursements, 'Zipmark_Collection');
     $this->assertEqual($disbursements->getHref(), 'http://example.org/disbursements');

@@ -4,11 +4,11 @@
 
 set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/../');
 
-require_once("simpletest/autorun.php");
-require_once("lib/zipmark.php");
-require_once('test_helpers.php');
+require_once 'simpletest/autorun.php';
+require_once 'lib/zipmark.php';
+require_once 'test_helpers.php';
 
-error_reporting(E_ALL);
+error_reporting(E_ALL | E_STRICT);
 ini_set('display_errors','On');
 
 Mock::generate('Zipmark_Http', 'MockZipmark_Http', array('GET', 'POST', 'PUT'));

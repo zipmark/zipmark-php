@@ -68,8 +68,7 @@ class ZipmarkCallbackTest extends UnitTestCase {
     try {
       $client->callbacks->create($callback_data);
       $this->fail("Expected Zipmark_ValidationError");
-    }
-    catch (Zipmark_ValidationError $e) {
+    } catch (Zipmark_ValidationError $e) {
       $this->assertEqual($e->getMessage(), "callback - url: is invalid.  You must use https://");
       $this->pass("Received Zipmark_ValidationError");
     }

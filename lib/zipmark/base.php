@@ -1,6 +1,7 @@
 <?php
 
-abstract class Zipmark_Base {
+abstract class Zipmark_Base
+{
   private $_name;
   private $_href;
   private $_client;
@@ -12,7 +13,8 @@ abstract class Zipmark_Base {
    * @param string         $href   URL linking to the object
    * @param Zipmark_Client $client The object's client
    */
-  function __construct($name = null, $href = null, $client = null) {
+  function __construct($name = null, $href = null, $client = null)
+  {
     $this->_name = $name;
     $this->_href = $href;
     $this->_client = $client;
@@ -23,7 +25,8 @@ abstract class Zipmark_Base {
    *
    * @return string The Object link
    */
-  public function getHref() {
+  public function getHref()
+  {
     return $this->_href;
   }
 
@@ -32,7 +35,8 @@ abstract class Zipmark_Base {
    *
    * @param string $href The Object link
    */
-  public function setHref($href) {
+  public function setHref($href)
+  {
     $this->_href = $href;
   }
 
@@ -41,7 +45,8 @@ abstract class Zipmark_Base {
    *
    * @return Zipmark_Client The object's client
    */
-  public function getClient() {
+  public function getClient()
+  {
     return $this->_client;
   }
 
@@ -50,20 +55,9 @@ abstract class Zipmark_Base {
    *
    * @param Zipmark_Client $client The object's client
    */
-  public function setClient($client) {
+  public function setClient($client)
+  {
     $this->_client = $client;
-  }
-
-  /**
-   * GET the specified path, validate the response and return the resulting object
-   *
-   * @param string        $path   Relative path to the desired resource
-   *
-   * @return Zipmark_Base         A Zipmark Object of type TBD
-   */
-  public function _get($path) {
-    $response = $this->_client->request(Zipmark_Client::GET, $path);
-    return Zipmark_Base::_parseJsonToNewObject($response->body, $this->_client);
   }
 
   /**
@@ -71,7 +65,8 @@ abstract class Zipmark_Base {
    *
    * @return string The object name
    */
-  public function getObjectName() {
+  public function getObjectName()
+  {
     return $this->_name;
   }
 
@@ -82,12 +77,11 @@ abstract class Zipmark_Base {
    *
    * @return string         The Object's URL
    */
-  public function pathFor($objId = null) {
-    if (is_null($objId)) {
-      return $this->getHref();
-    } else {
-      return $this->getHref() . '/' . rawurlencode($objId);
-    }
+  public function pathFor($objId = null)
+  {
+    return is_null($objId)
+          ? $this->getHref()
+          : $this->getHref() . '/' . rawurlencode($objId);
   }
 
   /**
@@ -95,7 +89,8 @@ abstract class Zipmark_Base {
    *
    * @param array $values Associative array of object attributes
    */
-  public function build($values = array()) {
+  public function build($values = array())
+  {
     if (!$this instanceof Zipmark_Collection)
       return null;
 
@@ -114,14 +109,18 @@ abstract class Zipmark_Base {
    *
    * @param array $values Associative array of object attributes
    */
-  public function create($values = array()) {
+  public function create($values = array())
+  {
     $object = $this->build($values);
     return $object->save();
   }
 
-  protected static function _parseJsonToNewObject($json, $client = null) {
+  protected static function parseJsonToNewObject($json, $client = null)
+  {
     $parsedObject = json_decode($json, true);
-    if (is_null($parsedObject)) return null;
+    if (is_null($parsedObject)) {
+      return null;
+    }
 
     $obj = Zipmark_Base::_createObject($parsedObject);
 
@@ -129,57 +128,44 @@ abstract class Zipmark_Base {
     return $obj;
   }
 
-  protected function _parseJsonToUpdateObject($json) {
+  protected function parseJsonToUpdateObject($json)
+  {
     $parsedObject = json_decode($json, true);
-    if (is_null($parsedObject)) return null;
-
-    $objName = key($parsedObject);
-
-    if ($objName == $this->getObjectName())
-      // Update the current object
-      Zipmark_Base::_buildObject($objName, $parsedObject[$objName], $this);
-    else if ($objName == 'errors')
-      // Add errors to existing object
-      Zipmark_Base::_buildObject($objName, $parsedObject, $this->_errors);
-  }
-
-  private static function _createObject($parsedObject) {
-    $objName = key($parsedObject);
-
-    $href = Zipmark_Base::_findSelfHref($parsedObject);
-    $newObj = new Zipmark_Resource($objName, $href);
-
-    if (!empty($href))
-      $newObj->setHref($href);
-    else if ($newObj instanceof Zipmark_Collection) {
-      $newObj->_count = Zipmark_Base::_numRecords($parsedObject);
+    if (is_null($parsedObject)) {
+      return null;
     }
 
-    self::_buildObject($objName, $parsedObject[$objName], $newObj);
+    $objName = key($parsedObject);
 
-    return $newObj;
+    if ($objName == $this->getObjectName()) {
+      // Update the current object
+      Zipmark_Base::buildObject($objName, $parsedObject[$objName], $this);
+    } else if ($objName == 'errors') {
+      // Add errors to existing object
+      Zipmark_Base::buildObject($objName, $parsedObject, $this->_errors);
+    }
   }
 
-  protected static function _buildObject($objK, $objV, &$obj) {
+  protected static function buildObject($objK, $objV, &$obj)
+  {
     switch (gettype($objV)) {
-      case 'array':
-        foreach ($objV as $k => $v) {
-          if (is_array($v) && array_key_exists('links', $v)) {
-            $obj->$k = self::_createObject(array($k => $v));
-          }
-          else if ($k == "links") {
-            $obj->$k = $v;
-          } else {
-            $obj = self::_buildObject($k, $v, $obj);
-          }
+    case 'array':
+      foreach ($objV as $k => $v) {
+        if (is_array($v) && array_key_exists('links', $v)) {
+          $obj->$k = self::_createObject(array($k => $v));
+        } else if ($k == "links") {
+          $obj->$k = $v;
+        } else {
+          $obj = self::buildObject($k, $v, $obj);
         }
-        break;
-      case 'string':
-      case 'boolean':
-      case 'integer':
-      case 'float':
-        $obj->$objK = $objV;
-        break;
+      }
+      break;
+    case 'string':
+    case 'boolean':
+    case 'integer':
+    case 'float':
+      $obj->$objK = $objV;
+      break;
     }
 
     if (isset($obj->_unsavedKeys))
@@ -188,20 +174,41 @@ abstract class Zipmark_Base {
     return $obj;
   }
 
-  protected static function _findSelfHref($parsedObject) {
+  private static function _createObject($parsedObject)
+  {
+    $objName = key($parsedObject);
+
+    $href = Zipmark_Base::_findSelfHref($parsedObject);
+    $newObj = new Zipmark_Resource($objName, $href);
+
+    if (!empty($href)) {
+      $newObj->setHref($href);
+    } else if ($newObj instanceof Zipmark_Collection) {
+      $newObj->_count = Zipmark_Base::_numRecords($parsedObject);
+    }
+
+    self::buildObject($objName, $parsedObject[$objName], $newObj);
+
+    return $newObj;
+  }
+
+  private static function _findSelfHref($parsedObject)
+  {
     $objName = key($parsedObject);
     $links = $parsedObject[$objName]["links"];
     if (!is_null($links)) {
       foreach ($links as $link) {
-        if ($link["rel"] == "self")
+        if ($link["rel"] == "self") {
           return $link["href"];
+        }
       }
     }
     
     return null;
   }
 
-  private static function _numRecords($parsedObject) {
+  private static function _numRecords($parsedObject)
+  {
     $meta = $parsedObject["meta"];
     $pagination = $meta["pagination"];
     return $pagination["total"];

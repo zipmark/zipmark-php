@@ -11,7 +11,7 @@ class Zipmark_ApprovalRulesTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, null, $http);
 
-    $approval_rules = $client->approval_rules->get_all();
+    $approval_rules = $client->approval_rules->getAll();
 
     $this->assertIsA($approval_rules, 'Zipmark_Collection');
     $this->assertEqual($approval_rules->getHref(), 'http://example.org/approval_rules');

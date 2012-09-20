@@ -11,7 +11,7 @@ class Zipmark_BillsTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, null, $http);
 
-    $bills = $client->bills->get_all();
+    $bills = $client->bills->getAll();
 
     $this->assertIsA($bills, 'Zipmark_Collection');
     $this->assertEqual($bills->getHref(), 'http://example.org/bills');

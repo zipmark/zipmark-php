@@ -11,7 +11,7 @@ class Zipmark_VendorRelationshipsTest extends UnitTestCase {
 
     $client = new Zipmark_Client(null, null, null, $http);
 
-    $vendor_relationships = $client->vendor_relationships->get_all();
+    $vendor_relationships = $client->vendor_relationships->getAll();
 
     $this->assertIsA($vendor_relationships, 'Zipmark_Collection');
     $this->assertEqual($vendor_relationships->getHref(), 'http://example.org/vendor_relationships');

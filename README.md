@@ -61,12 +61,14 @@ The Zipmark PHP client supports objects and lists of objects.
 ### Instantiating a client
 
 ```php
-$client = new Zipmark_Client("Application Identifier", "Application Secret", ProductionEnabled);
+$client = new Zipmark_Client("Application Identifier", "Application Secret");
 ```
 
 Application Identifier and Application Secret should be replaced with the vendor application identifier and secret provided by Zipmark.
 
-ProductionEnabled is a boolean flag that indicates whether traffic for this client is live production traffic.  Omitting this argument will result in all traffic being directed to Zipmark's sandbox environment.  If the ProductionEnabled flag is omitted, production mode can also be enabled with the following:
+### Production Mode
+
+The Zipmark PHP client will access Zipmark's sandbox environment by default.  To direct traffic to Zipmark's production environment, enable production mode with the following:
 
 ```php
 $client->setProduction(true);
@@ -129,7 +131,7 @@ $bill->save();
 Retrieve a list of all bills.  The client understands Zipmark's pagination system.  It loads one page of objects at a time and will retrieve more objects as necessary while iterating through the objects.
 
 ```php
-$bills = $client->bills->get_all();
+$bills = $client->bills->getAll();
 ```
 
 Get the number of objects available.

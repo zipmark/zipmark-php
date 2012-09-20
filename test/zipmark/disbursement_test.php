@@ -68,8 +68,7 @@ class ZipmarkDisbursementTest extends UnitTestCase {
     try {
       $client->disbursements->create($disbursement_data);
       $this->fail("Expected Zipmark_ValidationError");
-    }
-    catch (Zipmark_ValidationError $e) {
+    } catch (Zipmark_ValidationError $e) {
       $this->assertEqual($e->getMessage(), "disbursement - amount_cents: can't be blank");
       $this->pass("Received Zipmark_ValidationError");
     }

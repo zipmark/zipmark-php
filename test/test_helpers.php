@@ -21,12 +21,14 @@ function loadFixture($filename)
       break;
     }
     preg_match('/([^:]+): (.*)/', $fixture[$i], $matches);
-    if (sizeof($matches) > 2)
+    if (sizeof($matches) > 2) {
       $headers[$matches[1]] = $matches[2];
+    }
   }
 
-  if ($bodyLineNumber < sizeof($fixture))
+  if ($bodyLineNumber < sizeof($fixture)) {
     $body = implode(array_slice($fixture, $bodyLineNumber), "\n");
+  }
 
   return new Zipmark_ClientResponse($statusCode, $headers, $body);
 }
