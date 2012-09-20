@@ -80,6 +80,14 @@ $client->setProduction(true);
 $bill = $client->bills->get("Bill ID");
 ```
 
+### Discovering available resources
+
+```php
+$resources = $client->allResources();
+```
+
+Resources will contain an array of all available resources.
+
 ### Creating a new Bill
 
 Create a bill object, set required attributes, send it to Zipmark
