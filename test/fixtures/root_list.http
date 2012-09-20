@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+x-vendor-name: Test Vendor
+Content-Type: application/json; charset=utf-8
+X-UA-Compatible: IE=Edge,chrome=1
+ETag: "0f9d0d948914ad5bd85468f99e94b126"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: d5b86126c00f55d327256b109b536d92
+X-Runtime: 0.482524
+Connection: close
+
+{"vendor_root":{"links":[{"rel":"approval_rules","href":"http://example.org/approval_rules","media":null,"title":null,"hreflang":null},{"rel":"bills","href":"http://example.org/bills","media":null,"title":null,"hreflang":null},{"rel":"callbacks","href":"http://example.org/callbacks","media":null,"title":null,"hreflang":null},{"rel":"disbursements","href":"http://example.org/disbursements","media":null,"title":null,"hreflang":null},{"rel":"vendor_relationships","href":"http://example.org/vendor_relationships","media":null,"title":null,"hreflang":null}]}}

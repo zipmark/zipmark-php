@@ -2,16 +2,18 @@
 
 class ZipmarkApprovalRuleTest extends UnitTestCase {
   function testApprovalRuleGet() {
+    $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('approval_rules/get.http');
 
     $http = new MockZipmark_Http();
-    $http->returns('GET', $response, array('/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3', null));
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('GET', $response, array('http://example.org/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3', null));
 
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $client = new Zipmark_Client(null, null, null, $http);
 
     $approval_rule = $client->approval_rules->get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
 
-    $this->assertIsA($approval_rule, 'Zipmark_ApprovalRule');
+    $this->assertIsA($approval_rule, 'Zipmark_Resource');
     $this->assertEqual($approval_rule->getHref(), 'http://example.org/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
     $this->assertEqual($approval_rule->id, '9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
     $this->assertEqual($approval_rule->period, 'Monthly');
@@ -19,12 +21,14 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
   }
 
   function testApprovalRuleGetFail() {
+    $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('approval_rules/get_fail.http');
 
     $http = new MockZipmark_Http();
-    $http->returns('GET', $response, array('/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3', null));
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('GET', $response, array('http://example.org/approval_rules/9671336a-ee0f-4f98-8e84-b8d221a2b3f3', null));
 
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $client = new Zipmark_Client(null, null, null, $http);
     
     try {
       $approval_rule = $client->approval_rules->get('9671336a-ee0f-4f98-8e84-b8d221a2b3f3');
@@ -35,13 +39,6 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
     }
 
     $this->assertEqual($response->statusCode, 404);
-  }
-
-  function testApprovalRulePath() {
-    $approval_rule = new Zipmark_ApprovalRule();
-    $path = $approval_rule->pathFor("rule123");
-
-    $this->assertEqual($path, "/approval_rules/rule123");
   }
 }
 

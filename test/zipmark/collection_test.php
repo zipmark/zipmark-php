@@ -1,13 +1,28 @@
 <?php
 
 class Zipmark_CollectionTest extends UnitTestCase {
-  public function testCollectionPointers() {
-    $response = loadFixture('bills/list_p1_of_3.http');
+  public function testCollectionRetrieve() {
+    $response = loadFixture('root_list.http');
 
     $http = new MockZipmark_Http();
-    $http->returns('GET', $response, array('/bills', null));
+    $http->returns('GET', $response, array('/', null));
 
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $client = new Zipmark_Client(null, null, null, $http);
+
+    $bills = $client->bills;
+
+    $this->assertIsA($bills, 'Zipmark_Collection');
+  }
+
+  public function testCollectionPointers() {
+    $rootResponse = loadFixture('root_list.http');
+    $billResponse = loadFixture('bills/list_p1_of_3.http');
+
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('GET', $billResponse, array('http://example.org/bills', null));
+
+    $client = new Zipmark_Client(null, null, null, $http);
 
     $bills = $client->bills->get_all();
 
@@ -19,44 +34,48 @@ class Zipmark_CollectionTest extends UnitTestCase {
   }
 
   public function testNextPrev() {
+    $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('bills/list_p1_of_3.http');
 
     $http = new MockZipmark_Http();
-    $http->returns('GET', $response, array('/bills', null));
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('GET', $response, array('http://example.org/bills', null));
 
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $client = new Zipmark_Client(null, null, null, $http);
 
     $bills = $client->bills->get_all();
 
     $currentBill = $bills->current();
 
-    $this->assertIsA($currentBill, 'Zipmark_Bill');
+    $this->assertIsA($currentBill, 'Zipmark_Resource');
     $this->assertEqual($bills->key(), 0);
 
     $nextBill = $bills->next();
 
-    $this->assertIsA($nextBill, 'Zipmark_Bill');
+    $this->assertIsA($nextBill, 'Zipmark_Resource');
     $this->assertEqual($bills->key(), 1);
     $this->assertNotEqual($currentBill, $nextBill);
 
     $prevBill = $bills->prev();
 
-    $this->assertIsA($prevBill, 'Zipmark_Bill');
+    $this->assertIsA($prevBill, 'Zipmark_Resource');
     $this->assertEqual($bills->key(), 0);
     $this->assertEqual($currentBill, $prevBill);
     $this->assertNotEqual($prevBill, $nextBill);
   }
 
   public function testNextPrevPageChange() {
+    $rootResponse = loadFixture('root_list.http');
     $responsePage1 = loadFixture('bills/list_p1_of_3.http');
     $responsePage2 = loadFixture('bills/list_p2_of_3.http');
 
     $http = new MockZipmark_Http();
-    $http->returns('GET', $responsePage1, array('/bills', null));
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('GET', $responsePage1, array('http://example.org/bills', null));
     $http->returns('GET', $responsePage1, array('http://example.org/bills?page=1', null));
     $http->returns('GET', $responsePage2, array('http://example.org/bills?page=2', null));
 
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $client = new Zipmark_Client(null, null, null, $http);
 
     $bills = $client->bills->get_all();
 
@@ -73,17 +92,19 @@ class Zipmark_CollectionTest extends UnitTestCase {
   }
 
   public function testNextPrevEndOfList() {
+    $rootResponse = loadFixture('root_list.http');
     $responsePage1 = loadFixture('bills/list_p1_of_3.http');
     $responsePage2 = loadFixture('bills/list_p2_of_3.http');
     $responsePage3 = loadFixture('bills/list_p3_of_3.http');
 
     $http = new MockZipmark_Http();
-    $http->returns('GET', $responsePage1, array('/bills', null));
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('GET', $responsePage1, array('http://example.org/bills', null));
     $http->returns('GET', $responsePage1, array('http://example.org/bills?page=1', null));
     $http->returns('GET', $responsePage2, array('http://example.org/bills?page=2', null));
     $http->returns('GET', $responsePage3, array('http://example.org/bills?page=3', null));
 
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $client = new Zipmark_Client(null, null, null, $http);
 
     $bills = $client->bills->get_all();
 
@@ -95,7 +116,7 @@ class Zipmark_CollectionTest extends UnitTestCase {
     $currentBill = $bills->current();
 
     $this->assertEqual($prevBill, null);
-    $this->assertIsA($currentBill, 'Zipmark_Bill');
+    $this->assertIsA($currentBill, 'Zipmark_Resource');
     $this->assertEqual($bills->key(), 0);
     $this->assertEqual($bills->page(), 1);
 
@@ -115,7 +136,7 @@ class Zipmark_CollectionTest extends UnitTestCase {
     $currentBill = $bills->current();
 
     $this->assertEqual($nextBill, null);
-    $this->assertIsA($currentBill, 'Zipmark_Bill');
+    $this->assertIsA($currentBill, 'Zipmark_Resource');
     $this->assertEqual($bills->key(), 7);
     $this->assertEqual($bills->page(), 3);
   }

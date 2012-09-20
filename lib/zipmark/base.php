@@ -1,17 +1,20 @@
 <?php
 
 abstract class Zipmark_Base {
-  protected $_href;
-  protected $_client;
-  protected $_links;
+  private $_name;
+  private $_href;
+  private $_client;
+  private $_links;
 
   /**
    * Create a new Zipmark_Base
    *
+   * @param string         $name   The object's name
    * @param string         $href   URL linking to the object
    * @param Zipmark_Client $client The object's client
    */
-  function __construct($href = null, $client = null) {
+  function __construct($name = null, $href = null, $client = null) {
+    $this->_name = $name;
     $this->_href = $href;
     $this->_client = $client;
     $this->_links = array();
@@ -54,6 +57,24 @@ abstract class Zipmark_Base {
   }
 
   /**
+   * Provide the object's links
+   *
+   * @return array The object's links
+   */
+  public function getLinks() {
+    return $this->_links;
+  }
+
+  /**
+   * Set the object's links
+   *
+   * @param array $links The object's links
+   */
+  public function setLinks($links) {
+    $this->_links = $links;
+  }
+
+  /**
    * GET the specified path, validate the response and return the resulting object
    *
    * @param string        $path   Relative path to the desired resource
@@ -62,80 +83,16 @@ abstract class Zipmark_Base {
    */
   public function _get($path) {
     $response = $this->_client->request(Zipmark_Client::GET, $path);
-    $response->checkResponse();
     return Zipmark_Base::_parseJsonToNewObject($response->body, $this->_client);
   }
 
   /**
-   * Map and validate JSON object names to PHP class names
+   * Get the object name
    *
-   * Ex: bill -> Zipmark_Bill
-   *
-   * @param string $objectName The object name from JSON API return
-   *
-   * @return mixed             The PHP Class Name (if valid)
-   *                           null (if invalid)
+   * @return string The object name
    */
-  public static function getClassName($objectName) {
-    $objectClass = "Zipmark_" . self::camelize($objectName);
-
-    if (class_exists($objectClass))
-      return $objectClass;
-    else
-      return null;
-  }
-
-  /**
-   * Get the object name from the class name
-   *
-   * Ex: Zipmark_Bill -> Bill
-   *     Zipmark_VendorRelationships -> VendorRelationships
-   *
-   * @param boolean $camelized   Whether to return camel case or not
-   * @param string  $object_name Class name to convert to object name
-   */
-  public function getObjectName($camelized = false, $className = null) {
-    if ($className)
-      $name = $className;
-    else
-      $name = get_class($this);
-    $parts = explode('_', $name);
-    $resourceName = end($parts);
-    if ($camelized) {
-      return $resourceName;
-    } else {
-      return self::decamelize($resourceName);
-    }
-  }
-
-  /**
-   * Decamelize a string
-   *
-   * Ex: TheStringToDecamelize -> the_string_to_decamelize
-   *
-   * @param string $word The string to be decamelized
-   */
-  public static function decamelize($word) {
-    return preg_replace(
-      '/(^|[a-z])([A-Z])/e',
-      'strtolower(strlen("\\1") ? "\\1_\\2" : "\\2")',
-      $word
-    );
-  }
-
-  /**
-   * Camelize a string
-   *
-   * Ex: the_string_to_camelize -> TheStringToCamelize
-   *
-   * @param string $word The string to be camelized
-   */
-  public static function camelize($word) {
-    return preg_replace(
-      '/(^|_)([a-z])/e',
-      'strtoupper("\\2")',
-      $word
-    );
+  public function getObjectName() {
+    return $this->_name;
   }
 
   /**
@@ -146,18 +103,15 @@ abstract class Zipmark_Base {
    * @return string         The Object's URL
    */
   public function pathFor($objId = null) {
-    $objPath = "PATH_" . strtoupper($this->getObjectName());
     if (is_null($objId)) {
-      return constant("Zipmark_Client::$objPath");
+      return $this->getHref();
     } else {
-      $objPath .= "S";
-      $path = constant("Zipmark_Client::$objPath") . '/' . rawurlencode($objId);
-      return rtrim($path,'/');
+      return $this->getHref() . '/' . rawurlencode($objId);
     }
   }
 
   /**
-   * Build a new Zipmark_EditableResource
+   * Build a new Zipmark_Resource
    *
    * @param array $values Associative array of object attributes
    */
@@ -165,24 +119,24 @@ abstract class Zipmark_Base {
     if (!$this instanceof Zipmark_Collection)
       return null;
 
-    $objName = $this->getObjectName();
-    $classType = Zipmark_Base::getClassName(rtrim($objName, 's'));
-    $obj = new $classType(null, $this->_client);
-
+    $collectionName = $this->getObjectName();
+    $objectName = rtrim($collectionName, 's');
+    $object = new Zipmark_Resource($objectName, $this->getHref(), $this->_client);
+    
     foreach ($values as $k => $v) {
-      $obj->$k = $v;
+      $object->$k = $v;
     }
-    return $obj;
+    return $object;
   }
 
   /**
-   * Create a new Zipmark_EditableResource and save it to the Zipmark Service
+   * Create a new Zipmark_Resource and save it to the Zipmark Service
    *
    * @param array $values Associative array of object attributes
    */
   public function create($values = array()) {
-    $obj = $this->build($values);
-    return $obj->save();
+    $object = $this->build($values);
+    return $object->save();
   }
 
   protected static function _parseJsonToNewObject($json, $client = null) {
@@ -211,14 +165,10 @@ abstract class Zipmark_Base {
 
   private static function _createObject($parsedObject) {
     $objName = key($parsedObject);
-    $objClass = self::getClassName($objName);
-
-    if (!$objClass)
-      return new Zipmark_Object();
-
-    $newObj = new $objClass();
 
     $href = Zipmark_Base::_findSelfHref($parsedObject);
+    $newObj = new Zipmark_Resource($objName, $href);
+
     if (!empty($href))
       $newObj->setHref($href);
     else if ($newObj instanceof Zipmark_Collection) {
@@ -234,13 +184,14 @@ abstract class Zipmark_Base {
     switch (gettype($objV)) {
       case 'array':
         foreach ($objV as $k => $v) {
-          $objClass = self::getClassName($k);
-          if ($objClass)
+          if (is_array($v) && array_key_exists('links', $v)) {
             $obj->$k = self::_createObject(array($k => $v));
-          else if ($k == "links")
+          }
+          else if ($k == "links") {
             $obj->$k = $v;
-          else
+          } else {
             $obj = self::_buildObject($k, $v, $obj);
+          }
         }
         break;
       case 'string':
@@ -276,8 +227,5 @@ abstract class Zipmark_Base {
     return $pagination["total"];
   }
 }
-
-// In case objClass is not specified
-class Zipmark_Object {}
 
 ?>

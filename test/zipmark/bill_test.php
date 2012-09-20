@@ -2,16 +2,18 @@
 
 class ZipmarkBillTest extends UnitTestCase {
   function testBillGet() {
+    $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('bills/get.http');
 
     $http = new MockZipmark_Http();
-    $http->returns('GET', $response, array('/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b', null));
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('GET', $response, array('http://example.org/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b', null));
 
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $client = new Zipmark_Client(null, null, null, $http);
 
     $bill = $client->bills->get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
 
-    $this->assertIsA($bill, 'Zipmark_Bill');
+    $this->assertIsA($bill, 'Zipmark_Resource');
     $this->assertEqual($bill->getHref(), 'http://example.org/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
     $this->assertEqual($bill->id, '3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
     $this->assertEqual($bill->amount_cents, 1000);
@@ -23,19 +25,21 @@ class ZipmarkBillTest extends UnitTestCase {
     $this->assertFalse($bill->recurring);
     $this->assertEqual($bill->rendered_content, 'test content');
     $this->assertEqual($bill->date, '2012-07-11');
-    $this->assertIsA($bill->vendor, 'Zipmark_Vendor');
+    $this->assertIsA($bill->vendor, 'Zipmark_Resource');
     $this->assertEqual($bill->vendor->id, '3e919a6e-d8c1-11e0-9e1f-e394e5601a36');
     $this->assertEqual($bill->vendor->name, 'Test Vendor');
     $this->assertEqual($bill->vendor->identifier, 'test_vendor');
   }
 
   function testBillGetFail() {
+    $rootResponse = loadFixture('root_list.http');  
     $response = loadFixture('bills/get_fail.http');
 
     $http = new MockZipmark_Http();
-    $http->returns('GET', $response, array('/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1c', null));
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('GET', $response, array('http://example.org/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1c', null));
 
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $client = new Zipmark_Client(null, null, null, $http);
 
     try {
       $bill = $client->bills->get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1c');
@@ -49,6 +53,8 @@ class ZipmarkBillTest extends UnitTestCase {
   }
 
   function testBillBuild() {
+    $rootResponse = loadFixture('root_list.http');
+
     $bill_data = array(
       'identifier'       => 'testbill8',
       'amount_cents'     => 12345,
@@ -61,11 +67,12 @@ class ZipmarkBillTest extends UnitTestCase {
     $bill_json = json_encode(array("bill" => $bill_data));
 
     $http = new MockZipmark_Http();
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $http->returns('GET', $rootResponse, array('/', null));
+    $client = new Zipmark_Client(null, null, null, $http);
 
     $bill = $client->bills->build($bill_data);
 
-    $this->assertIsA($bill, 'Zipmark_Bill');
+    $this->assertIsA($bill, 'Zipmark_Resource');
     $this->assertEqual($bill->amount_cents, 12345);
     $this->assertEqual($bill->memo, 'Test Bill #8');
     $this->assertEqual($bill->identifier, 'testbill8');
@@ -73,6 +80,7 @@ class ZipmarkBillTest extends UnitTestCase {
   }
 
   function testBillCreate() {
+    $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('bills/create.http');
 
     $bill_data = array(
@@ -87,25 +95,27 @@ class ZipmarkBillTest extends UnitTestCase {
     $bill_json = json_encode(array("bill" => $bill_data));
 
     $http = new MockZipmark_Http();
-    $http->returns('POST', $response, array('/bills', $bill_json));
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('POST', $response, array('http://example.org/bills', $bill_json));
 
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $client = new Zipmark_Client(null, null, null, $http);
 
     $bill = $client->bills->create($bill_data);
 
-    $this->assertIsA($bill, 'Zipmark_Bill');
+    $this->assertIsA($bill, 'Zipmark_Resource');
     $this->assertEqual($bill->amount_cents, 12345);
     $this->assertEqual($bill->memo, 'Test Bill #8');
     $this->assertEqual($bill->identifier, 'testbill8');
     $this->assertEqual($bill->status, 'open');
     $this->assertEqual($bill->rendered_content, 'foo');
-    $this->assertIsA($bill->vendor, 'Zipmark_Vendor');
+    $this->assertIsA($bill->vendor, 'Zipmark_Resource');
     $this->assertEqual($bill->vendor->id, '3e919a6e-d8c1-11e0-9e1f-e394e5601a36');
     $this->assertEqual($bill->vendor->name, 'Test Vendor');
     $this->assertEqual($bill->vendor->identifier, 'test_vendor');
   }
 
   function testBillCreateFail() {
+    $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('bills/create_fail.http');
 
     $bill_data = array(
@@ -116,9 +126,10 @@ class ZipmarkBillTest extends UnitTestCase {
     $bill_json = json_encode(array("bill" => $bill_data));
 
     $http = new MockZipmark_Http();
-    $http->returns('POST', $response, array('/bills', $bill_json));
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('POST', $response, array('http://example.org/bills', $bill_json));
 
-    $client = new Zipmark_Client(null, null, false, null, $http);
+    $client = new Zipmark_Client(null, null, null, $http);
 
     try {
       $client->bills->create($bill_data);
@@ -130,15 +141,6 @@ class ZipmarkBillTest extends UnitTestCase {
     }
 
     $this->assertEqual($response->statusCode, 422);
-  }
-
-  function testBillToJson() {
-    $bill = new Zipmark_Bill();
-    $bill->amount_cents = 12350;
-    $bill->memo = "Testing toJson";
-
-    $json = $bill->toJson();
-    $this->assertEqual($json, '{"bill":{"amount_cents":12350,"memo":"Testing toJson"}}');
   }
 }
 

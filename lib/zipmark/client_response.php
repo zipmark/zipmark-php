@@ -21,7 +21,7 @@ class Zipmark_ClientResponse {
   /**
    * Assess the success of a response
    *
-   * @param  Zipmark_Object            $object Optional object to include with error
+   * @param  Zipmark_Base              $object Optional object to include with error
    *
    * @throws Zipmark_ConnectionError           If unable to connect to the Zipmark Service
    * @throws Zipmark_Error                     If a bad API request is made

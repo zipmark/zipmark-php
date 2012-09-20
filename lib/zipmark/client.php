@@ -13,34 +13,23 @@ class Zipmark_Client extends Zipmark_Base {
   private $_appSecret;
   private $_production = false;
   private $_apiUrl;
+  private $_collections = array();
 
   const GET  = 'GET';
   const POST = 'POST';
   const PUT  = 'PUT';
   
-  // Paths within Zipmark, relative to base URL
-  const PATH_APPROVAL_RULES       = '/approval_rules';
-  const PATH_BILLS                = '/bills';
-  const PATH_CALLBACKS            = '/callbacks';
-  const PATH_DISBURSEMENTS        = '/disbursements';
-  const PATH_VENDOR_RELATIONSHIPS = '/vendor_relationships';
-
-  // Zipmark Object Types
-  private static $zipmarkCollectionTypes = array(
-    'approval_rules', 'bills', 'callbacks', 'disbursements', 'vendor_relationships',
-  );
-
   /**
    * Create a new Zipmark_Client
    *
-   * @param string $appId     Application Identifier
-   * @param string $appSecret Application Secret
-   * @param string $apiUrl    URL of Zipmark API - Defaults to production
+   * @param string       $appId     Application Identifier
+   * @param string       $appSecret Application Secret
+   * @param string       $apiUrl    URL of Zipmark API - Defaults to production
+   * @param Zipmark_Http $http A Zipmark_Http object to use - makes testing possible
    */
-  function __construct($appId = null, $appSecret = null, $production = false, $apiUrl = null, Zipmark_Http $http = null) {
+  function __construct($appId = null, $appSecret = null, $apiUrl = null, Zipmark_Http $http = null) {
     $this->_appId = $appId;
     $this->_appSecret = $appSecret;
-    $this->_production = $production;
     $this->_apiUrl = $apiUrl;
 
     if (null === $http) {
@@ -59,11 +48,28 @@ class Zipmark_Client extends Zipmark_Base {
       );
     }
     $this->_http = $http;
+}
 
-    // Objects
-    foreach (self::$zipmarkCollectionTypes as $obj) {
-      $className = Zipmark_Base::getClassName($obj);
-      $this->$obj = new $className(null, $this);
+  /**
+   * Magic to retrieve collection types from the Zipmark service and make them usable
+   *
+   * @param  string             $k The name of the collection desired
+   *
+   * @return Zipmark_Collection    The requested collection, if it exists, or null
+   */
+  public function __get($k) {
+    // If the requested collection is known, return a new collection
+    if (array_key_exists($k, $this->_collections)) {
+      return new Zipmark_Collection($k, $this->_collections[$k], $this);
+    } else {
+      // Otherwise, load the collections and check again
+      $this->loadRoot();
+      if (array_key_exists($k, $this->_collections)) {
+        return new Zipmark_Collection($k, $this->_collections[$k], $this);
+      } else {
+        // If it still cannot be located, return null
+        return null;
+      }
     }
   }
 
@@ -120,6 +126,21 @@ class Zipmark_Client extends Zipmark_Base {
   public function setProduction($enabled) {
     $this->_production = $enabled;
     $this->_http->setApiUrl($this->apiUrl());
+  }
+
+  private function loadRoot() {
+    $response = $this->request(Zipmark_Client::GET, '/');
+    
+    $parsedObject = json_decode($response->body, true);
+    if (is_null($parsedObject)) return null;
+
+    if (array_key_exists('vendor_root', $parsedObject)) {
+      if (array_key_exists('links', $parsedObject['vendor_root'])) {
+        foreach ($parsedObject['vendor_root']['links'] as $link) {
+          $this->_collections[$link['rel']] = $link['href'];
+        }
+      } else throw new Zipmark_Error("Root response does not contain links");
+    } else throw new Zipmark_Error("Root response does not contain vendor_root");
   }
 }
 
