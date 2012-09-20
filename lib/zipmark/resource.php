@@ -84,6 +84,26 @@ abstract class Zipmark_Resource extends Zipmark_Base {
   public function toJson() {
     return json_encode(array($this->getObjectName() => $this->_values));
   }
+
+  /**
+   * Save a Zipmark_Resource to the Zipmark Service
+   *
+   * @return Zipmark_Resource The Zipmark Object
+   */
+  public function save() {
+    if ($this->id)
+      $this->_save(Zipmark_Client::PUT, $this->path());
+    else
+      $this->_save(Zipmark_Client::POST, $this->pathFor(''));
+
+    return $this;
+  }
+
+  protected function _save($method, $path) {
+    $response = $this->_client->request($method, $path, $this->toJson());
+    Zipmark_Base::_parseJsonToUpdateObject($response->body);
+    $response->checkResponse($this);
+  }
 }
 
 ?>

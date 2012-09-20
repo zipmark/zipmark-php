@@ -11,7 +11,6 @@ require_once('zipmark/client_response.php');
 require_once('zipmark/errors.php');
 require_once('zipmark/collection.php');
 require_once('zipmark/resource.php');
-require_once('zipmark/editable_resource.php');
 
 require_once('zipmark/object_classes.php');
 

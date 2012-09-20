@@ -169,9 +169,6 @@ abstract class Zipmark_Base {
     $classType = Zipmark_Base::getClassName(rtrim($objName, 's'));
     $obj = new $classType(null, $this->_client);
 
-    if (!$obj instanceof Zipmark_EditableResource)
-      throw new Zipmark_ReadOnlyObjectTypeError("Cannot build");
-
     foreach ($values as $k => $v) {
       $obj->$k = $v;
     }

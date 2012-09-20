@@ -37,18 +37,6 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
     $this->assertEqual($response->statusCode, 404);
   }
 
-  function testApprovalRuleBuildFail() {
-    $client = new Zipmark_Client();
-
-    try {
-      $approval_rule = $client->approval_rules->build();
-      $this->fail("Expected Zipmark_ReadOnlyObjectTypeError");
-    }
-    catch (Zipmark_ReadOnlyObjectTypeError $e) {
-      $this->pass("Received Zipmark_ReadOnlyObjectTypeError");
-    }
-  }
-
   function testApprovalRulePath() {
     $approval_rule = new Zipmark_ApprovalRule();
     $path = $approval_rule->pathFor("rule123");
