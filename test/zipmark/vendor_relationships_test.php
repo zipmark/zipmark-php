@@ -1,7 +1,9 @@
 <?php
 
-class Zipmark_VendorRelationshipsTest extends UnitTestCase {
-  public function testVendorRelationshipsGet() {
+class Zipmark_VendorRelationshipsTest extends UnitTestCase
+{
+  public function testVendorRelationshipsGet()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('vendor_relationships/list.http');
 

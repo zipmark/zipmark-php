@@ -1,7 +1,9 @@
 <?php
 
-class Zipmark_CallbacksTest extends UnitTestCase {
-  public function testCallbacksGet() {
+class Zipmark_CallbacksTest extends UnitTestCase
+{
+  public function testCallbacksGet()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('callbacks/list.http');
 

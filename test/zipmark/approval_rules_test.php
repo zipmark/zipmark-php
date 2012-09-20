@@ -1,7 +1,9 @@
 <?php
 
-class Zipmark_ApprovalRulesTest extends UnitTestCase {
-  public function testApprovalRulesGet() {
+class Zipmark_ApprovalRulesTest extends UnitTestCase
+{
+  public function testApprovalRulesGet()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('approval_rules/list.http');
 

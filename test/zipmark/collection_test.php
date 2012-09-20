@@ -1,7 +1,9 @@
 <?php
 
-class Zipmark_CollectionTest extends UnitTestCase {
-  public function testCollectionRetrieve() {
+class Zipmark_CollectionTest extends UnitTestCase
+{
+  public function testCollectionRetrieve()
+  {
     $response = loadFixture('root_list.http');
 
     $http = new MockZipmark_Http();
@@ -14,7 +16,8 @@ class Zipmark_CollectionTest extends UnitTestCase {
     $this->assertIsA($bills, 'Zipmark_Collection');
   }
 
-  public function testCollectionPointers() {
+  public function testCollectionPointers()
+  {
     $rootResponse = loadFixture('root_list.http');
     $billResponse = loadFixture('bills/list_p1_of_3.http');
 
@@ -33,7 +36,8 @@ class Zipmark_CollectionTest extends UnitTestCase {
     $this->assertEqual($bills->perPage(), 3);
   }
 
-  public function testNextPrev() {
+  public function testNextPrev()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('bills/list_p1_of_3.http');
 
@@ -64,7 +68,8 @@ class Zipmark_CollectionTest extends UnitTestCase {
     $this->assertNotEqual($prevBill, $nextBill);
   }
 
-  public function testNextPrevPageChange() {
+  public function testNextPrevPageChange()
+  {
     $rootResponse = loadFixture('root_list.http');
     $responsePage1 = loadFixture('bills/list_p1_of_3.http');
     $responsePage2 = loadFixture('bills/list_p2_of_3.http');
@@ -91,7 +96,8 @@ class Zipmark_CollectionTest extends UnitTestCase {
     $this->assertEqual($bills->page(), 1);
   }
 
-  public function testNextPrevEndOfList() {
+  public function testNextPrevEndOfList()
+  {
     $rootResponse = loadFixture('root_list.http');
     $responsePage1 = loadFixture('bills/list_p1_of_3.http');
     $responsePage2 = loadFixture('bills/list_p2_of_3.http');

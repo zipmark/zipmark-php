@@ -1,7 +1,9 @@
 <?php
 
-class Zipmark_BillsTest extends UnitTestCase {
-  public function testBillsGet() {
+class Zipmark_BillsTest extends UnitTestCase
+{
+  public function testBillsGet()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('bills/list.http');
 

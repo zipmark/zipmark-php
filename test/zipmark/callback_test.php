@@ -1,7 +1,9 @@
 <?php
 
-class ZipmarkCallbackTest extends UnitTestCase {
-  function testCallbackGet() {
+class ZipmarkCallbackTest extends UnitTestCase
+{
+  function testCallbackGet()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('callbacks/get.http');
 
@@ -22,7 +24,8 @@ class ZipmarkCallbackTest extends UnitTestCase {
     $this->assertEqual($callback->url, 'https://example.com/callbacks');
   }
 
-  function testCallbackCreate() {
+  function testCallbackCreate()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('callbacks/create.http');
 
@@ -48,7 +51,8 @@ class ZipmarkCallbackTest extends UnitTestCase {
     $this->assertEqual($callback->url, 'https://example.com/callbacks');
   }
 
-  function testCallbackCreateFail() {
+  function testCallbackCreateFail()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('callbacks/create_fail.http');
 

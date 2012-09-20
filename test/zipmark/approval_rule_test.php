@@ -1,7 +1,9 @@
 <?php
 
-class ZipmarkApprovalRuleTest extends UnitTestCase {
-  function testApprovalRuleGet() {
+class ZipmarkApprovalRuleTest extends UnitTestCase
+{
+  function testApprovalRuleGet()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('approval_rules/get.http');
 
@@ -20,7 +22,8 @@ class ZipmarkApprovalRuleTest extends UnitTestCase {
     $this->assertEqual($approval_rule->amount_cents, 10000);
   }
 
-  function testApprovalRuleGetFail() {
+  function testApprovalRuleGetFail()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('approval_rules/get_fail.http');
 

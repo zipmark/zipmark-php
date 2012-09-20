@@ -1,7 +1,9 @@
 <?php
 
-class ZipmarkBillTest extends UnitTestCase {
-  function testBillGet() {
+class ZipmarkBillTest extends UnitTestCase
+{
+  function testBillGet()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('bills/get.http');
 
@@ -31,7 +33,8 @@ class ZipmarkBillTest extends UnitTestCase {
     $this->assertEqual($bill->vendor->identifier, 'test_vendor');
   }
 
-  function testBillGetFail() {
+  function testBillGetFail()
+  {
     $rootResponse = loadFixture('root_list.http');  
     $response = loadFixture('bills/get_fail.http');
 
@@ -51,7 +54,8 @@ class ZipmarkBillTest extends UnitTestCase {
     $this->assertEqual($response->statusCode, 404);
   }
 
-  function testBillBuild() {
+  function testBillBuild()
+  {
     $rootResponse = loadFixture('root_list.http');
 
     $bill_data = array(
@@ -78,7 +82,8 @@ class ZipmarkBillTest extends UnitTestCase {
     $this->assertEqual($bill->toJson(), $bill_json);        
   }
 
-  function testBillCreate() {
+  function testBillCreate()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('bills/create.http');
 
@@ -113,7 +118,8 @@ class ZipmarkBillTest extends UnitTestCase {
     $this->assertEqual($bill->vendor->identifier, 'test_vendor');
   }
 
-  function testBillCreateFail() {
+  function testBillCreateFail()
+  {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('bills/create_fail.http');
 
