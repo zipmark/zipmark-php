@@ -19,15 +19,8 @@ class AllTests extends TestSuite {
     $this->TestSuite('All tests');
     $this->addFile($rootPath . "test/zipmark/client_test.php");
     $this->addFile($rootPath . "test/zipmark/collection_test.php");
-    $this->addFile($rootPath . "test/zipmark/approval_rule_test.php");
-    $this->addFile($rootPath . "test/zipmark/approval_rules_test.php");
-    $this->addFile($rootPath . "test/zipmark/bill_test.php");
-    $this->addFile($rootPath . "test/zipmark/bills_test.php");
-    $this->addFile($rootPath . "test/zipmark/callback_test.php");
-    $this->addFile($rootPath . "test/zipmark/callbacks_test.php");
-    $this->addFile($rootPath . "test/zipmark/disbursement_test.php");
-    $this->addFile($rootPath . "test/zipmark/disbursements_test.php");
-    $this->addFile($rootPath . "test/zipmark/vendor_relationships_test.php");
+    $this->addFile($rootPath . "test/zipmark/simple_resource_test.php");
+    $this->addFile($rootPath . "test/zipmark/nested_resource_test.php");
   }
 }
 

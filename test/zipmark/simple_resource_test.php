@@ -1,8 +1,8 @@
 <?php
 
-class ZipmarkDisbursementTest extends UnitTestCase
+class ZipmarkSimpleResourceTest extends UnitTestCase
 {
-  function testDisbursementGet()
+  function testResourceGet()
   {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('disbursements/get.http');
@@ -23,7 +23,7 @@ class ZipmarkDisbursementTest extends UnitTestCase
     $this->assertEqual($disbursement->amount_cents, 5000);
   }
 
-  function testDisbursementCreate()
+  function testResourceCreate()
   {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('disbursements/create.http');
@@ -51,7 +51,7 @@ class ZipmarkDisbursementTest extends UnitTestCase
     $this->assertEqual($disbursement->amount_cents, 5000);
   }
 
-  function testDisbursementCreateFail()
+  function testResourceCreateFail()
   {
     $rootResponse = loadFixture('root_list.http');
     $response = loadFixture('disbursements/create_fail.http');
