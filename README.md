@@ -161,6 +161,39 @@ $bill = $bills->next();
 $bill = $bills->prev();
 ```
 
+### Callback processing
+
+The client is able to process, verify and extract data from callbacks received from the Zipmark service.
+
+#### Loading a callback response
+
+A Zipmark_Callback object must be initialized with a Zipmark_Client object and the HTTP callback content (headers and body)
+
+The array of HTTP headers sent in the callback POST should be contained in the $_SERVER variable.
+The body of the callback POST should be accessible through the call file_get_contents('php://input');
+
+```php
+$callback = new Zipmark_Callback($client, $httpHeaders, $httpBody);
+```
+
+#### Verifying a callback
+
+```php
+$callbackValid = $callback->valid();
+```
+
+$callbackValid will contain a true or false value.
+
+#### Retrieving the callback data
+
+Valid callbacks contain events, object types and objects.  The below functions will return their respective values/objects, or null if the callback is invalid.
+
+```php
+$callbackEvent      = $callback->getEvent();
+$callbackObjectType = $callback->getObjectType();
+$callbackObject     = $callback->getObject();
+```
+
 ## API Documentation
 
 Please see the [Zipmark API](https://dev.zipmark.com) or contact Zipmark Support via [email](mailto:developers@zipmark.com) or [chat](http://bit.ly/zipmarkAPIchat) for more information.

@@ -33,4 +33,9 @@ function loadFixture($filename)
   return new Zipmark_ClientResponse($statusCode, $headers, $body);
 }
 
+function loadFile($filename)
+{
+  return file(dirname(__FILE__) . '/fixtures/' . $filename, FILE_IGNORE_NEW_LINES);
+}
+
 ?>

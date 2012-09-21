@@ -89,6 +89,17 @@ class Zipmark_Resource extends Zipmark_Base
   }
 
   /**
+   * Build an object from JSON
+   *
+   * @param string         $json   JSON representation of a Zipmark_Resource
+   * @param Zipmark_Client $client A Zipmark_Client object
+   */
+  public static function fromJson($json, $client = null)
+  {
+    return Zipmark_Base::parseJsonToNewObject($json, $client);
+  }
+
+  /**
    * Save a Zipmark_Resource to the Zipmark Service
    *
    * @return Zipmark_Resource The Zipmark Object
