@@ -89,7 +89,11 @@ class Zipmark_Collection extends Zipmark_Base
    */
   public function getResource($index)
   {
-    return $this->_objects[$index];
+    if (isset($this->_objects[$index])) {
+      return $this->_objects[$index];
+    } else {
+      return null;
+    }
   }
 
   /**

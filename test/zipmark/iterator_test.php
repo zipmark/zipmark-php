@@ -90,9 +90,11 @@ class Zipmark_IteratorTest extends UnitTestCase
     $currentBill = $iterator->current();
 
     $this->assertEqual($prevBill, null);
-    $this->assertIsA($currentBill, 'Zipmark_Resource');
-    $this->assertEqual($iterator->key(), 0);
+    $this->assertEqual($currentBill, null);
+    $this->assertEqual($iterator->key(), -1);
     $this->assertEqual($bills->page(), 1);
+
+    $iterator->rewind();
 
     $iterator->next();
     $iterator->next();
@@ -110,8 +112,8 @@ class Zipmark_IteratorTest extends UnitTestCase
     $currentBill = $iterator->current();
 
     $this->assertEqual($nextBill, null);
-    $this->assertIsA($currentBill, 'Zipmark_Resource');
-    $this->assertEqual($iterator->key(), 7);
+    $this->assertEqual($currentBill, null);
+    $this->assertEqual($iterator->key(), 8);
     $this->assertEqual($bills->page(), 3);
   }
 }

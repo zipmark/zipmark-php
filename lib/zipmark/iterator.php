@@ -59,7 +59,6 @@ class Zipmark_Iterator implements Iterator
     $this->_position--;
     if ($this->_position < 0) {
       // Hit the beginning of the list
-      $this->_position++;
       return null;
     } elseif ($this->_position < (($this->_collection->page() - 1) * $this->_collection->perPage())) {
       // Reversing to the previous page
@@ -82,7 +81,6 @@ class Zipmark_Iterator implements Iterator
     $this->_position++;
     if ($this->_position >= $this->_collection->count()) {
       // Hit the end of the list
-      $this->_position--;
       return null;
     }
     elseif ($this->_position >= ($this->_collection->page() * $this->_collection->perPage())) {

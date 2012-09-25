@@ -148,7 +148,7 @@ Get the number of objects available.
 $bills->count();
 ```
 
-### Iterating through a list of all Bills
+### Basic Iterator
 
 The Zipmark_Iterator class understands Zipmark's pagination system.  It loads one page of objects at a time and will retrieve more objects as necessary while iterating through the objects.
 
@@ -157,17 +157,45 @@ $bills = $client->bills->getAll();
 $iterator = new Zipmark_Iterator($bills);
 ```
 
-Get the current object
+Get the current object (returns null if the iterator has passed either end of the list)
 
 ```php
 $bill = $iterator->current();
 ```
 
-Get the next/previous object (these functions will return a null if there's no next or previous object)
+Get the next/previous object (returns null if the next/previous object would pass either end of the list)
 
 ```php
 $bill = $iterator->next();
 $bill = $iterator->prev();
+```
+
+### Iterating through a list of all Bills
+
+The Zipmark_Iterator can be used to iterate through all objects of a given resource type.
+
+```php
+$iterator = new Zipmark_Iterator($client->bills->getAll());
+
+foreach ($iterator as $bill) {
+  print "Bill " . $iterator->key() . " is ID ";
+  print $bill->id . " for " . $bill->amount_cents . " cents.\n";
+}
+```
+
+Which would result in output similar to:
+
+```
+Bill 0 is ID 3cf1290adc08b28899dd7c7e263cca4dc9a2 for 1234 cents
+Bill 1 is ID 3cf1b7bc6cfbaeb6b8b2a6001037d284c918 for 100 cents
+Bill 2 is ID 3cea3cab019984233228c2eaff0edcbbb733 for 3456 cents
+Bill 3 is ID 3ceaf09259f883159622aa4401ab7d06d45a for 2345 cents
+Bill 4 is ID 3cea079b288120ffb129dfb62ae18de3dfee for 1234 cents
+Bill 5 is ID 3ce95db62b1069e59e122c515eb191c70987 for 12345 cents
+Bill 6 is ID 3ce627f7559478bee1129dae3203e373f0df for 1030 cents
+Bill 7 is ID 3ce69e91d68417d1e9892ca903eba8c66a2e for 1030 cents
+Bill 8 is ID 3ce6eb4a5b433f3e9b073d15a5ff725dec46 for 1020 cents
+Bill 9 is ID 3ce66b0e9a510f90fb26906dd0da04df6de0 for 101 cents
 ```
 
 ### Callback processing
