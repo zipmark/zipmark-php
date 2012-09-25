@@ -144,7 +144,7 @@ class Zipmark_Client extends Zipmark_Base
    *
    * @return array Available resources from Zipmark service
    */
-  public function allResources()
+  public function resources()
   {
     if (!count($this->_collections)) {
       $this->_loadRoot();

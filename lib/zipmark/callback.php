@@ -30,7 +30,7 @@ class Zipmark_Callback
    *
    * @return boolean The validity of the callback
    */
-  public function valid()
+  public function isValid()
   {
     return $this->_callbackFields['valid'];
   }
@@ -40,9 +40,9 @@ class Zipmark_Callback
    *
    * @return string The callback event (e.g. 'bill.create'), or null for an invalid callback
    */
-  public function getEvent()
+  public function event()
   {
-    return $this->valid()
+    return $this->isValid()
           ? $this->_callbackFields['event']
           : null;
   }
@@ -52,9 +52,9 @@ class Zipmark_Callback
    *
    * @return string The callback object type (e.g. 'bill'), or null for an invalid callback
    */
-  public function getObjectType()
+  public function objectType()
   {
-    return $this->valid()
+    return $this->isValid()
           ? $this->_callbackFields['type']
           : null;
   }
@@ -64,9 +64,9 @@ class Zipmark_Callback
    *
    * @return Zipmark_Resource The callback object, or null for an invalid callback
    */
-  public function getObject()
+  public function object()
   {
-    return $this->valid()
+    return $this->isValid()
           ? $this->_callbackFields['object']
           : null;
   }
@@ -90,7 +90,7 @@ class Zipmark_Callback
       $callback = $parsedBody['callback'];
       $this->_callbackFields['event'] = $callback['event'];
       $this->_callbackFields['type'] = strtolower($callback['object_type']);
-      $objectArray = array($this->getObjectType() => $callback['object']);
+      $objectArray = array($this->objectType() => $callback['object']);
       $this->_callbackFields['object'] = Zipmark_Resource::fromJson(json_encode($objectArray), $this->_client);
     } else {
       throw new Zipmark_Error("Body does not contain valid content.");

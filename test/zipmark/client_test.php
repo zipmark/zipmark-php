@@ -70,7 +70,7 @@ class ZipmarkClientTest extends UnitTestCase
     $this->assertEqual($productionApiUrl, 'https://api.zipmark.com');
   }
 
-  function testAllResources()
+  function testResources()
   {
     $rootResponse = loadFixture('root_list.http');
 
@@ -79,7 +79,7 @@ class ZipmarkClientTest extends UnitTestCase
 
     $client = new Zipmark_Client(null, null, null, $http);
 
-    $allResources = $client->allResources();
+    $allResources = $client->resources();
 
     $this->assertEqual(
       $allResources,
@@ -103,7 +103,7 @@ class ZipmarkClientTest extends UnitTestCase
     $client = new Zipmark_Client(null, null, null, $http);
 
     try {
-      $allResources = $client->allResources();
+      $allResources = $client->resources();
       $this->fail("Expected Zipmark_Error");
     } catch (Zipmark_Error $e) {
       $this->assertEqual($e->getMessage(), "Root response does not contain vendor_root");

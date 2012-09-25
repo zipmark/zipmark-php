@@ -83,7 +83,7 @@ $bill = $client->bills->get("Bill ID");
 ### Discovering available resources
 
 ```php
-$resources = $client->allResources();
+$resources = $client->resources();
 ```
 
 Resources will contain an array of all available resources.
@@ -188,7 +188,7 @@ $callback = new Zipmark_Callback($client, $httpHeaders, $httpBody);
 #### Verifying a callback
 
 ```php
-$callbackValid = $callback->valid();
+$callbackValid = $callback->isValid();
 ```
 
 $callbackValid will contain a true or false value.
@@ -198,9 +198,9 @@ $callbackValid will contain a true or false value.
 Valid callbacks contain events, object types and objects.  The below functions will return their respective values/objects, or null if the callback is invalid.
 
 ```php
-$callbackEvent      = $callback->getEvent();
-$callbackObjectType = $callback->getObjectType();
-$callbackObject     = $callback->getObject();
+$callbackEvent      = $callback->event();
+$callbackObjectType = $callback->objectType();
+$callbackObject     = $callback->object();
 ```
 
 ## API Documentation

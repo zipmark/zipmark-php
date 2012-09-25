@@ -20,10 +20,10 @@ class ZipmarkCallbackTest extends UnitTestCase
 
     $callback = new Zipmark_Callback($client, $headers, $body);
 
-    $this->assertTrue($callback->valid());
-    $this->assertEqual($callback->getEvent(), 'bill.create');
-    $this->assertEqual($callback->getObjectType(), 'bill');
-    $this->assertIsA($callback->getObject(), 'Zipmark_Resource');
+    $this->assertTrue($callback->isValid());
+    $this->assertEqual($callback->event(), 'bill.create');
+    $this->assertEqual($callback->objectType(), 'bill');
+    $this->assertIsA($callback->object(), 'Zipmark_Resource');
   }
 
   function testCallbackFieldsInvalidResponse()
@@ -41,10 +41,10 @@ class ZipmarkCallbackTest extends UnitTestCase
 
     $callback = new Zipmark_Callback($client, $headers, $body);
 
-    $this->assertFalse($callback->valid());
-    $this->assertNull($callback->getEvent());
-    $this->assertNull($callback->getObjectType());
-    $this->assertNull($callback->getObject());
+    $this->assertFalse($callback->isValid());
+    $this->assertNull($callback->event());
+    $this->assertNull($callback->objectType());
+    $this->assertNull($callback->object());
   }
 }
 
