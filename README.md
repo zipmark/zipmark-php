@@ -134,9 +134,9 @@ $bill->memo = "Please pay with Zipmark";
 $bill->save();
 ```
 
-### Retrieving and using a list of all Bills
+### Retrieving a list of all Bills
 
-Retrieve a list of all bills.  The client understands Zipmark's pagination system.  It loads one page of objects at a time and will retrieve more objects as necessary while iterating through the objects.
+Retrieve a list of all bills.
 
 ```php
 $bills = $client->bills->getAll();
@@ -148,17 +148,26 @@ Get the number of objects available.
 $bills->count();
 ```
 
+### Iterating through a list of all Bills
+
+The Zipmark_Iterator class understands Zipmark's pagination system.  It loads one page of objects at a time and will retrieve more objects as necessary while iterating through the objects.
+
+```php
+$bills = $client->bills->getAll();
+$iterator = new Zipmark_Iterator($bills);
+```
+
 Get the current object
 
 ```php
-$bill = $bills->current();
+$bill = $iterator->current();
 ```
 
 Get the next/previous object (these functions will return a null if there's no next or previous object)
 
 ```php
-$bill = $bills->next();
-$bill = $bills->prev();
+$bill = $iterator->next();
+$bill = $iterator->prev();
 ```
 
 ### Callback processing

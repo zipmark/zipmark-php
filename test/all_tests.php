@@ -19,6 +19,7 @@ class AllTests extends TestSuite {
     $this->TestSuite('All tests');
     $this->addFile($rootPath . "test/zipmark/client_test.php");
     $this->addFile($rootPath . "test/zipmark/collection_test.php");
+    $this->addFile($rootPath . "test/zipmark/iterator_test.php");
     $this->addFile($rootPath . "test/zipmark/simple_resource_test.php");
     $this->addFile($rootPath . "test/zipmark/nested_resource_test.php");
     $this->addFile($rootPath . "test/zipmark/callback_test.php");

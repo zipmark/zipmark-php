@@ -1,15 +1,7 @@
 <?php
 
-/**
- * Iterate through paginated resources.  Used for lists that may require
- * multiple API calls to retrieve all results such as index calls.
- *
- * Iterating past the last item in either direction returns a 
- * null and leaves the pointer unchanged.
- */
-class Zipmark_Collection extends Zipmark_Base implements Iterator
+class Zipmark_Collection extends Zipmark_Base
 {
-  private $_position = 0; // Position within the current page
   private $_links;        // The collection's links
   private $_page;         // Current page number
   private $_totalPages;   // Total number of pages
@@ -59,45 +51,6 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator
   }
 
   /**
-   * Rewind to the beginning
-   */
-  public function rewind()
-  {
-    if (isset($this->_links['first'])) {
-      $this->_loadFrom($this->_links['first']);
-    }
-    $this->_position = 0;
-  }
-
-  /**
-   * The current object
-   *
-   * @return Zipmark_Resource The current object
-   */
-  public function current()
-  {
-    if (empty($this->_count)) {
-      return null;
-    }
-
-    // Calculate "effective position" within the current page
-    $effectivePosition = $this->_position % $this->_perPage;
-
-    return $this->_objects[$effectivePosition];
-  }
-
-
-  /**
-   * Get the current position
-   *
-   * @return integer Current position
-   */
-  public function key()
-  {
-    return $this->_position;
-  }
-
-  /**
    * Get the current page
    *
    * @return integer Current page
@@ -128,69 +81,43 @@ class Zipmark_Collection extends Zipmark_Base implements Iterator
   }
 
   /**
-   * Increments the position to the next element
+   * Return the resource at the requested index
    *
-   * @return Zipmark_Resource The next element in the collection
+   * @param  integer          $index Desired index
+   *
+   * @return Zipmark_Resource        The requested resource
    */
-  public function next()
+  public function getResource($index)
   {
-    if (empty($this->_count)) {
-      return null;
-    }
-
-    $this->_position++;
-    if ($this->_position >= $this->_count) {
-      // Hit the end of the list
-      $this->_position--;
-      return null;
-    }
-    elseif ($this->_position >= ($this->_page * $this->_perPage)) {
-      // Advancing to the next page
-      if (isset($this->_links['next']))
-        $this->_loadFrom($this->_links['next']);
-    }
-
-    // Calculate "effective position" within the current page
-    $effectivePosition = $this->_position % $this->_perPage;
-
-    return $this->valid() ? $this->_objects[$effectivePosition] : null;
+    return $this->_objects[$index];
   }
 
   /**
-   * Decrements the position to the previous element
+   * Load the specified named link
    *
-   * @return Zipmark_Resource The previous element in the collection
+   * @param string $link Desired link ('first', 'next', 'prev', 'last')
    */
-  public function prev()
+  public function loadLink($link)
   {
-    if (empty($this->_count)) {
+    if (isset($this->_links[$link])) {
+      $this->_loadFrom($this->_links[$link]);
+    } else {
       return null;
     }
-
-    $this->_position--;
-    if ($this->_position < 0) {
-      // Hit the beginning of the list
-      $this->_position++;
-      return null;
-    }
-    elseif ($this->_position < (($this->_page - 1) * $this->_perPage)) {
-      // Reversing to the previous page
-      if (isset($this->_links['prev']))
-        $this->_loadFrom($this->_links['prev']);
-    }
-
-    // Calculate "effective position" within the current page
-    $effectivePosition = $this->_position % $this->_perPage;
-
-    return $this->valid() ? $this->_objects[$effectivePosition] : null;
   }
 
   /**
-   * @return boolean True if the current position is valid.
+   * Load the specified page
+   *
+   * @param integer $page Desired page number
    */
-  public function valid()
+  public function loadPage($page)
   {
-    return ($this->_position >= 0 && $this->_position < $this->_count);
+    if (($page > 0) && ($page <= $this->numPages())) {
+      $this->_loadFrom($this->getHref(), array('page' => $page));
+    } else {
+      return null;
+    }
   }
 
   /**

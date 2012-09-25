@@ -10,6 +10,7 @@ require_once 'zipmark/client.php';
 require_once 'zipmark/client_response.php';
 require_once 'zipmark/errors.php';
 require_once 'zipmark/collection.php';
+require_once 'zipmark/iterator.php';
 require_once 'zipmark/resource.php';
 require_once 'zipmark/callback.php';
 
