@@ -44,7 +44,7 @@ class Zipmark_Collection extends Zipmark_Base
   public function count()
   {
     if (empty($this->_count)) {
-      $response = $this->getClient()->request(Zipmark_Client::GET, $this->pathFor());
+      $response = $this->getClient()->request('GET', $this->pathFor());
       $this->_loadPageMetadata($response);
     }
     return $this->_count;
