@@ -60,7 +60,12 @@ class Zipmark_ClientResponse
     case 422:
       if (isset($object)) {
         $errors = json_decode($this->body);
-        throw new Zipmark_ValidationError($object, $errors);
+        // Handle old and new style errors
+        if (isset($errors->errors)) {
+          throw new Zipmark_ValidationError($object, $errors->errors);
+        } else {
+          throw new Zipmark_ValidationError($object, $errors);
+        }
       }
       return;
     case 500:

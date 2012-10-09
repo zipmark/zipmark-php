@@ -140,9 +140,6 @@ abstract class Zipmark_Base
     if ($objName == $this->getObjectName()) {
       // Update the current object
       Zipmark_Base::buildObject($objName, $parsedObject[$objName], $this);
-    } else if ($objName == 'errors') {
-      // Add errors to existing object
-      Zipmark_Base::buildObject($objName, $parsedObject, $this->_errors);
     }
   }
 
