@@ -89,7 +89,7 @@ class Zipmark_Callback
     if (is_array($parsedBody) && array_key_exists('callback', $parsedBody)) {
       $callback = $parsedBody['callback'];
       $this->_callbackFields['event'] = $callback['event'];
-      $this->_callbackFields['type'] = strtolower($callback['object_type']);
+      $this->_callbackFields['type'] = Zipmark_Callback::decamelize($callback['object_type']);
       $objectArray = array($this->objectType() => $callback['object']);
       $this->_callbackFields['object'] = Zipmark_Resource::fromJson(json_encode($objectArray), $this->_client);
     } else {
@@ -118,6 +118,14 @@ class Zipmark_Callback
     if ($signedString == $zipmarkSignature) {
       $this->_callbackFields['valid'] = true;
     }
+  }
+
+  private static function decamelize($word) {
+    return preg_replace(
+      '/(^|[a-z])([A-Z])/e',
+      'strtolower(strlen("\\1") ? "\\1_\\2" : "\\2")',
+      $word
+    );
   }
 }
 
