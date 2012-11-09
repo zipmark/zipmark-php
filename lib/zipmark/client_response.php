@@ -28,6 +28,7 @@ class Zipmark_ClientResponse
    * @throws Zipmark_ConnectionError           If unable to connect to the Zipmark Service
    * @throws Zipmark_Error                     If a bad API request is made
    * @throws Zipmark_UnauthorizedError         If lacking or improper credentials are provided
+   * @throws Zipmark_PermissionError           If an unauthorized request is made
    * @throws Zipmark_NotFoundError             If the object requested doesn't exist
    * @throws Zipmark_ValidationError           If the object fails validation on create or update
    * @throws Zipmark_ServerError               If an internal server error occurs at Zipmark
@@ -40,7 +41,7 @@ class Zipmark_ClientResponse
       return;
 
     // Do not fail here if the response is not valid JSON
-    $error = @$this->_parseErrorJson($this->body);
+    $error = Zipmark_ClientResponse::_parseErrorJson($this->body);
 
     switch ($this->statusCode) {
     case 0:
@@ -51,11 +52,12 @@ class Zipmark_ClientResponse
     case 401:
       throw new Zipmark_UnauthorizedError('Your credentials are not authorized to connect to Zipmark.');
     case 403:
-      throw new Zipmark_UnauthorizedError('Please use an API key to connect to Zipmark.');
+      $message = (is_null($error) ? 'Permission Denied' : "Permissions: " . implode(": ", $error["permissions"]));
+      throw new Zipmark_PermissionError($message);
     case 404:
       $message = is_null($error)
                 ? 'Object not found'
-                : $error;
+                : $error["message"];
       throw new Zipmark_NotFoundError($message);
     case 422:
       if (isset($object)) {
@@ -93,11 +95,10 @@ class Zipmark_ClientResponse
     }
   }
 
-  private function _parseErrorJson($json)
+  private static function _parseErrorJson($json)
   {
     $parsedResponse = json_decode($json, true);
-
-    return is_null($parsedResponse) ? null : $parsedResponse["error"];
+    return is_null($parsedResponse) ? null : $parsedResponse["errors"];
   }
 }
 

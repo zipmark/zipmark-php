@@ -8,4 +8,4 @@ X-Request-Id: 654044c9b71a85daa36e3397580e6a21
 X-Runtime: 0.176204
 Connection: close
 
-{"identifier":["can't be blank"],"bill_template_id":["can't be blank"],"bill":["is not open"]}
+{"errors":{"identifier":["can't be blank"],"bill_template_id":["can't be blank"],"bill":["is not open"]},"object_type":"bill"}

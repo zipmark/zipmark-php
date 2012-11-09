@@ -175,6 +175,35 @@ class ZipmarkNestedResourceTest extends UnitTestCase
       $this->fail("Received unexpected error" . $e->getMessage());
     }
   }
+
+  function testResourceUpdateFail()
+  {
+    $rootResponse = loadFixture('root_list.http');
+    $getResponse = loadFixture('bills/get.http');
+    $putResponse = loadFixture('bills/update_fail_permissions.http');
+
+    $http = new MockZipmark_Http();
+    $http->returns('GET', $rootResponse, array('/', null));
+    $http->returns('GET', $getResponse, array('http://example.org/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b', null));
+
+    $client = new Zipmark_Client(null, null, null, $http);
+
+    $bill = $client->bills->get('3caca1e0a68fa94d5bf073fdfc1ef9db2a1b');
+
+    $bill->amount_cents = 314;
+
+    $update_json = $bill->toJson();
+
+    $http->returns('PUT', $putResponse, array('http://example.org/bills/3caca1e0a68fa94d5bf073fdfc1ef9db2a1b', $update_json));
+
+    try {
+      $bill->save();
+      $this->fail("Expected Zipmark_PermissionError");
+    } catch (Zipmark_PermissionError $e) {
+      $this->assertEqual($e->getMessage(), "Permissions: Bill is not open");
+      $this->pass("Received Zipmark_PermissionError");
+    }
+  }
 }
 
 ?>

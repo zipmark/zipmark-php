@@ -1,0 +1,11 @@
+HTTP/1.1 403 Forbidden
+x-vendor-name: v0
+Content-Type: application/json; charset=utf-8
+X-UA-Compatible: IE=Edge,chrome=1
+Cache-Control: no-cache
+Set-Cookie: _zipmark-service.git_session=BAh7BkkiD3Nlc3Npb25faWQGOgZFRkkiJTA4YTRiNDM0YzgxNjNjNTA4MGE2MDhkMGZkOTgyOWFhBjsAVA%3D%3D--ce290fedf511e3ab1df33cc77c494cc2eb7a6a82; path=/; expires=Sat, 10-Nov-2012 19:34:17 GMT; HttpOnly
+X-Request-Id: 1b3a7777f57ae38eb24baccc05817e69
+X-Runtime: 0.014821
+Connection: close
+
+{"errors":{"permissions":["Bill is not open"]},"object_type":"bill"}

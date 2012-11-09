@@ -10,6 +10,8 @@ class Zipmark_NotFoundError extends Zipmark_Error {}
 
 class Zipmark_UnauthorizedError extends Zipmark_Error {}
 
+class Zipmark_PermissionError extends Zipmark_Error {}
+
 class Zipmark_ConnectionError extends Zipmark_Error {}
 
 class Zipmark_RequestError extends Zipmark_Error {}

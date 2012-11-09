@@ -91,7 +91,7 @@ class Zipmark_Http
       if ($curl = curl_init()) {
         if (curl_setopt_array($curl, $opts)) {
           if ($response = curl_exec($curl)) {
-            list($authHeader, $header, $body) = explode("\r\n\r\n", $response, 3);
+            list($authHeader, $header, $body) = preg_split("/\r\n\r\nHTTP\/1\.1 100 Continue\r\n\r\n|\r\n\r\n/", $response, 3);
             $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);            
             $headers = $this->_getHeaders($header);
             curl_close($curl);
