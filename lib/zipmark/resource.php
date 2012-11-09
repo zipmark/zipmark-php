@@ -75,7 +75,7 @@ class Zipmark_Resource extends Zipmark_Base
   public function get($objectId)
   {
     $response = $this->getClient()->request('GET', $this->pathFor($objectId));
-    return Zipmark_Base::parseJsonToNewObject($response->body, $this->_client);
+    return Zipmark_Base::parseJsonToNewObject($response->body, $this->getClient());
   }
 
   /**
@@ -106,11 +106,11 @@ class Zipmark_Resource extends Zipmark_Base
    */
   public function save()
   {
+    $method = 'POST';
     if ($this->id) {
-      $response = $this->getClient()->request('PUT', $this->pathFor($this->id), $this->toJson());
-    } else {
-      $response = $this->getClient()->request('POST', $this->pathFor(), $this->toJson());
+      $method = 'PUT';
     }
+    $response = $this->getClient()->request($method, $this->pathFor(), $this->toJson());
     Zipmark_Base::parseJsonToUpdateObject($response->body);
     $response->checkResponse($this);
 
