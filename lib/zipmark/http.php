@@ -11,7 +11,7 @@ class Zipmark_Http
   const API_VERSION    = '2';
 
   // Zipmark PHP Client Library Version
-  const CLIENT_VERSION = '0.2';
+  const CLIENT_VERSION = '0.3';
 
   /**
    * Create a new Zipmark_Http
