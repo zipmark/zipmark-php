@@ -98,7 +98,7 @@ class Zipmark_ClientResponse
   private static function _parseErrorJson($json)
   {
     $parsedResponse = json_decode($json, true);
-    return is_null($parsedResponse) ? null : $parsedResponse["errors"];
+    return is_null($parsedResponse) || !array_key_exists("errors", $parsedResponse) ? null : $parsedResponse["errors"];
   }
 }
 
