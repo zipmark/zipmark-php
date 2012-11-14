@@ -39,6 +39,7 @@ class Zipmark_Http
       CURLOPT_HTTPHEADER     => array(
         'Content-Type: application/json',
         'Accept: application/vnd.com.zipmark.v' . self::API_VERSION . '+json',
+        'Expect:',
         self::_userAgent()
       ),
     );
