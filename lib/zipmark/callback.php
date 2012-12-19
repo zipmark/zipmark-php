@@ -75,7 +75,6 @@ class Zipmark_Callback
   {
     $this->_headers = array(
       'content_type'                     => $this->_phpRequest['headers']['HTTP_CONTENT_TYPE'],
-      'accept'                           => $this->_phpRequest['headers']['HTTP_ACCEPT'],
       'x-zipmark-application-identifier' => $this->_phpRequest['headers']['HTTP_X_ZIPMARK_APPLICATION_IDENTIFIER'],
       'date'                             => $this->_phpRequest['headers']['HTTP_DATE'],
       'authorization'                    => $this->_phpRequest['headers']['HTTP_AUTHORIZATION'],
